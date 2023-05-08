@@ -1,16 +1,18 @@
 import React from "react";
-import { Button, Layout, Menu, MenuProps, Space, theme } from "antd";
-import { TeamOutlined, UserOutlined } from "@ant-design/icons";
+import { Button, Layout, Menu, MenuProps, Space, theme , Row, Col} from "antd";
+import { InfoCircleTwoTone, TeamOutlined, UserOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-const { Header, Content, Sider } = Layout;
-
+import Sildebar from "./SildeBar/Sildebar";
+import Chatwindow from "./Chatwindow/Chatwindow";
+import Infor from "./Infor/infor";
+import styled from "styled-components";
+//const { Header, Content, Sider } = Layout;
 const Home = () => {
   const navigator = useNavigate();
 
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-
   const siderItems: MenuProps["items"] = [
     {
       key: "chat-group",
@@ -44,7 +46,7 @@ const Home = () => {
   };
 
   return (
-    <Layout hasSider>
+    /*<Layout hasSider>
       <Sider
         style={{
           overflow: "auto",
@@ -79,29 +81,18 @@ const Home = () => {
         <Header style={{ padding: 0, background: colorBgContainer }}>
           Header
         </Header>
-        <Content style={{ margin: "16px 10px 16px 0px", overflow: "initial" }}>
-          <div
-            style={{
-              padding: 10,
-              textAlign: "center",
-              background: colorBgContainer,
-            }}
-          >
-            <p>long content</p>
-            {
-              // indicates very long content
-              Array.from({ length: 100 }, (_, index) => (
-                <React.Fragment key={index}>
-                  {index % 20 === 0 && index ? "more" : "..."}
-                  <br />
-                </React.Fragment>
-              ))
-            }
-          </div>
-        </Content>
+        
       </Layout>
-    </Layout>
-  );
+    </Layout>*/
+      <div>
+    <Row>
+      <Col span={6}><Sildebar /></Col>
+      <Col span={13}><Chatwindow /></Col>
+      <Col span={5}><Infor /></Col>
+    </Row>
+  </div>
+            
+    );
 };
 
 export default Home;
