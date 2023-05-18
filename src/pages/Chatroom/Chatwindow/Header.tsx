@@ -1,11 +1,12 @@
-import { Avatar } from "antd";
+import { Avatar,Divider,Tooltip, Typography } from "antd";
 import React from "react";
 import styled from "styled-components";
-import {  TeamOutlined, UserOutlined ,CheckCircleTwoTone} from "@ant-design/icons";
+import {  TeamOutlined, UserOutlined ,CheckCircleTwoTone,AntDesignOutlined} from "@ant-design/icons";
 const Headerstyle=styled.div`
 display: flex;
-justify-content: left;
+justify-content: space-between;
 .header{
+
     &_avatar { 
         width: 70px; 
         height: 70px; 
@@ -33,7 +34,8 @@ justify-content: left;
       &_Ative{
         margin-left: 6px;
       }
-
+.group{
+}
 }
 
 `
@@ -46,11 +48,27 @@ export default function Header(){
                 <Avatar className="header_avatar" src="https://i.pinimg.com/originals/e1/ed/eb/e1edeb6d3f086b74b0f33be6e665c10f.jpg"></Avatar></div>
         
         <div>
-            <div className="header_name">Huỳnh Hoàng Khánh</div>
+            <Typography className="header_name">Huỳnh Hoàng Khánh</Typography >
             <CheckCircleTwoTone className="header_Ative" twoToneColor="#52c41a" />
             <span className="header_Ative">Active now</span>
             
         </div>
+    <div>
+    <Avatar.Group
+      maxCount={2}
+      size="large"
+      maxStyle={{ color: '#f56a00', backgroundColor: '#fde3cf' }}
+    >
+      <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel&key=3" />
+      <Avatar style={{ backgroundColor: '#f56a00' }}>K</Avatar>
+      <Tooltip title="Ant User" placement="top">
+        <Avatar style={{ backgroundColor: '#87d068' }} icon={<UserOutlined />} />
+      </Tooltip>
+      <Avatar style={{ backgroundColor: '#1890ff' }} icon={<AntDesignOutlined />} />
+    </Avatar.Group>
+ 
+    </div>
+    
         </Headerstyle>
     )
 }

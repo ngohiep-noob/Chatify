@@ -15,21 +15,35 @@ const Home = () => {
     console.log("logout");
     navigator("/");
   };
-
+  const { Sider } = Layout;
   return (
     <Layout hasSider>
       <SideBar />
-
-      <Layout className="site-layout" style={{ marginLeft: 350 }}>
-        <Row>
-          <Col span={13}>
-            <Chatwindow />
-          </Col>
-          <Col span={5}>
-            <Infor />
-          </Col>
-        </Row>
-      </Layout>
+      <Sider
+      style={{
+        height: "100vh",
+        left: 0,
+        top: 0,
+        bottom: 0,
+      }}
+      width={790}
+      theme="light"
+    >
+    <Chatwindow />
+    </Sider>
+    <Sider
+      style={{
+        height: "100vh",
+        left: 0,
+        top: 0,
+        bottom: 0,
+      }}
+      width={300}
+      theme="light"
+    >
+    <Infor/>
+    </Sider>
+      
     </Layout>
   );
 };

@@ -1,15 +1,17 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Checkbox, Form, Input, Spin, Col } from "antd";
+import { Button, Checkbox, Form, Input, Spin, Space } from "antd";
 import styled from "styled-components";
 import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
-import Logoo from "./Logo";
+
+import Logo from "../../components/SideBar/Logo";
+
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  height: 100vh;
+  height: 75vh;
 `;
 
 const StyledForm = styled(Form)`
@@ -64,7 +66,25 @@ const StyledForm = styled(Form)`
     left: 32px;
   }
 `;
+const StyledSpace = styled(Space)`
+  margin-top: 32px;
+  margin-bottom: 10px;
+  margin-left:32px;
+  width: 100%;
+ 
+  .img {
+    font-size: 60px;
+    display: inline-block;
+    margin-right: 10px;
+  }
 
+  .text {
+    margin: 0;
+    display: block;
+    font-size:45px;
+    font-family: Inter; 
+  }
+`;
 const Login = () => {
   const navigator = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -81,7 +101,8 @@ const Login = () => {
   return (
     <div>
       <div>
-        <Logoo></Logoo>
+        <StyledSpace><Logo></Logo></StyledSpace>
+        
 
         <Wrapper>
           <Spin spinning={loading}>

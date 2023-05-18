@@ -10,7 +10,6 @@ function App() {
     text-align: center;
     color: palevioletred;
   `;
-
   const routes = useRoutes([
     {
       path: "/",
