@@ -8,7 +8,7 @@ const StyledSpace = styled(Space)`
   width: 100%;
 
   .img {
-    font-size: 40px;
+    font-size: 50px;
     display: inline-block;
     margin-right: 10px;
   }
@@ -16,6 +16,9 @@ const StyledSpace = styled(Space)`
   .text {
     margin: 0;
     display: block;
+    font-size: 40px; 
+    color: #171A1FFF;
+    font-family: Inter; 
   }
 `;
 

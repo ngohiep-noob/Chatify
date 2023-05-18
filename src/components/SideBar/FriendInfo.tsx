@@ -34,7 +34,7 @@ const Avastyle = styled.div`
   .Time {
     position: absolute;
     top: 7px;
-    left: 285px;
+    left: 270px;
     font-size: 12px;
   }
 `;

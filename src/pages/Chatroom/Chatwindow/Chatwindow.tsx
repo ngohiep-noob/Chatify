@@ -4,6 +4,7 @@ import Header from "./Header";
 import Message from "./message";
 import { Button, Input } from "antd";
 import {  EditTwoTone,InstagramFilled,PaperClipOutlined } from "@ant-design/icons";
+
 const Headerstyle=styled.div`
 display: flex;
 justify-content: left;
@@ -27,21 +28,19 @@ border-bottom: 1px solid rgb(230,230,230);
 `
 const Senttstyle=styled.div` 
 height: 60px;
-
+margin-top:2%;
 display: flex;
-justify-content: space-between; 
-
+justify-content: center;
 .input{
     background: #F3F4F6FF;
-    width: 650px; 
-    top:20px;
-    left: 40px; 
+    width: 80%; 
+   
     height: 35px; 
     border-radius: 0px;
     border-width: 0px;
 }
 .input input {
-    width: 600px; 
+    width: 95%; 
     font-size: 14px; 
     background: #F3F4F6FF; /* neutral-200 */
     border-radius: 0px; /* border-m */
@@ -52,8 +51,7 @@ justify-content: space-between;
     font-size: 20px;
 }
 .button{
-    top:22px;
-    left: -40px; 
+margin-left: 40px;
 }
 .ant-btn {
     color: #FFFFFFFF; /* white */
@@ -82,6 +80,7 @@ export default function Chatwindow(){
         </div>
     </Contentstyle>
     <Senttstyle>
+
     <Input placeholder=" Type a message" prefix={<EditTwoTone className="icon" />} 
     suffix={ <InstagramFilled className="icon" />}  className="input"/>
    

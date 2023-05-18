@@ -30,11 +30,22 @@ const StyledRow = styled(Row)`
   }
 
   .details-col {
-    height: 50%;
+    height: 60%;
   }
 
   .ctrl-btn {
     margin: 0 3px;
+  }
+  .gmail{
+    font-size:15px;
+  }
+  .name{
+    font-size:18px;
+    font-family: Epilogue;
+
+  }
+  .hrrr{
+   
   }
 `;
 
@@ -54,7 +65,6 @@ const siderItems: MenuProps["items"] = [
       <UserItem />,
       <UserItem />,
       <UserItem />,
-      "chat-group-5",
     ].map((name, i) => ({ key: "gr-" + i + 1, label: name })),
   },
   {
@@ -73,12 +83,11 @@ export default function SideBar() {
       style={{
         overflow: "auto",
         height: "100vh",
-        position: "fixed",
         left: 0,
         top: 0,
         bottom: 0,
       }}
-      width={350}
+      width={430}
       theme="light"
     >
       <Logo />
@@ -86,35 +95,36 @@ export default function SideBar() {
       <StyledRow justify="center" align="middle">
         <Col span={4} className="avatar-col">
           <Avatar
-            size={40}
+            size={60}
             src="https://i.pinimg.com/originals/e1/ed/eb/e1edeb6d3f086b74b0f33be6e665c10f.jpg"
           ></Avatar>
         </Col>
-        <Col span={12} className="details-col">
-          <Text strong>Nguyễn Chánh Nghĩa</Text> <br />
+        <Col span={14} className="details-col">
+          <Text strong className="name">Nguyễn Chánh Nghĩa</Text> <br />
           <Text type="secondary" className="gmail">
             nguyenchanhnghia2917@gmail.com
           </Text>
         </Col>
-        <Col span={8}>
-          <Button type="primary" size="large" className="ctrl-btn">
+        <Col span={6}>
+          <Button type="primary" size="middle" className="ctrl-btn">
             <UserAddOutlined />
           </Button>
-          <Button type="primary" size="large" danger className="ctrl-btn">
+          <Button type="primary" size="middle" danger className="ctrl-btn">
             <LogoutOutlined />
           </Button>
         </Col>
-      </StyledRow>
+      
       <hr
-        style={{ width: "75%", marginBottom: "20px", marginTop: "10px" }}
+        style={{ width: "90%", marginBottom: "20px", marginTop: "10px", color:"#27AEF2 "}}
+       className="hrrr"
       ></hr>
-
+</StyledRow>
       <Menu
         className="menu"
         mode="inline"
         defaultSelectedKeys={["2"]}
         items={siderItems}
       />
-    </Sider>
+      </Sider>
   );
 }

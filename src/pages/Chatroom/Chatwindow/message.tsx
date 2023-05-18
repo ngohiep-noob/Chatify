@@ -56,14 +56,12 @@ export default function Message({text,displayName,photoUrl,time}:{text: string,d
     return(
         <Messagestyle>
             <div className={time}>  
-
             <div className="messageInfo">
                 <img src={photoUrl} />
                 <span>{displayName}</span>
             </div>
             <div className="messageContent">
                 <p>{text}</p>
-                <img src={photoUrl} />
             </div>
 
         </div>
