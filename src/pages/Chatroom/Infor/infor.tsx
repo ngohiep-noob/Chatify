@@ -49,7 +49,7 @@ justify-content: center;
   
 }
 .line{
-    width: 280px; 
+    width: 70%; 
 	margin: 0 auto;
 }
 `
