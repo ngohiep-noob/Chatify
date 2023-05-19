@@ -16,6 +16,7 @@ import {
   CheckCircleTwoTone,
   EditTwoTone,
   InstagramFilled,
+  SendOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import Message from "./message";
@@ -25,22 +26,7 @@ const Senttstyle = styled.div`
   margin-top: 2%;
   display: flex;
   justify-content: center;
-  .input {
-    background: #f3f4f6ff;
-    width: 80%;
 
-    height: 35px;
-    border-radius: 0px;
-    border-width: 0px;
-  }
-  .input input {
-    width: 95%;
-    font-size: 14px;
-    background: #f3f4f6ff; /* neutral-200 */
-    border-radius: 0px; /* border-m */
-    border-width: 0px;
-    outline: none;
-  }
   .icon {
     font-size: 20px;
   }
@@ -56,8 +42,15 @@ const Senttstyle = styled.div`
 export default function ChatWindow() {
   return (
     <div style={{ width: "100%" }}>
-      <Row style={{ height: "20vh" }}>
-        <Col span={3}>
+      <Row style={{ height: "10vh" }} align="middle">
+        <Col
+          span={3}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           <Avatar
             className="header_avatar"
             size={50}
@@ -65,13 +58,16 @@ export default function ChatWindow() {
           ></Avatar>
         </Col>
 
-        <Col span={16}>
-          <Typography className="header_name">Huỳnh Hoàng Khánh</Typography>
+        <Col span={17}>
+          <Typography.Text className="header_name" strong>
+            Huỳnh Hoàng Khánh
+          </Typography.Text>{" "}
+          <br />
           <CheckCircleTwoTone className="header_Ative" twoToneColor="#52c41a" />
           <span className="header_Ative">Active now</span>
         </Col>
 
-        <Col>
+        <Col span={3}>
           <Avatar.Group
             maxCount={2}
             maxStyle={{ color: "#f56a00", backgroundColor: "#fde3cf" }}
@@ -92,7 +88,14 @@ export default function ChatWindow() {
         </Col>
       </Row>
 
-      <div style={{ overflow: "auto", height: "70vh" }}>
+      <div
+        style={{
+          overflow: "auto",
+          height: "80vh",
+          padding: "10px",
+          backgroundColor: "#FFF",
+        }}
+      >
         <Message
           text="Hiep an cuc dung ko"
           photoUrl={
@@ -101,6 +104,14 @@ export default function ChatWindow() {
           displayName="Hưng"
           time={"owner"}
         ></Message>
+        <Message
+          text="Hiep an cuc dung ko"
+          photoUrl={
+            "https://i.pinimg.com/originals/e1/ed/eb/e1edeb6d3f086b74b0f33be6e665c10f.jpg"
+          }
+          displayName="Hưng"
+          time={"owner"}
+        ></Message> 
         <Message
           text="Dung luon r"
           photoUrl={
@@ -167,15 +178,28 @@ export default function ChatWindow() {
         ></Message>
       </div>
 
-      <Senttstyle>
-        <Input
-          placeholder=" Type a message"
-          prefix={<EditTwoTone className="icon" />}
-          suffix={<InstagramFilled className="icon" />}
-          className="input"
-        />
-        <Button className="button">Send</Button>
-      </Senttstyle>
+      <Row
+        justify="space-between"
+        align="middle"
+        style={{ padding: "10px", height: "10vh" }}
+      >
+        <Col span={21}>
+          <Input placeholder=" Type a message" />
+        </Col>
+        <Col
+          span={3}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Button className="button" type="primary">
+            Send
+            <SendOutlined />
+          </Button>
+        </Col>
+      </Row>
     </div>
   );
 }

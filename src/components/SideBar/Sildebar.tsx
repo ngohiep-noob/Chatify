@@ -81,12 +81,11 @@ export default function SideBar() {
       style={{
         overflow: "auto",
         height: "100vh",
-
         left: 0,
         top: 0,
         bottom: 0,
       }}
-      width={"30vw"}
+      width={"25vw"}
       theme="light"
     >
       <Logo />

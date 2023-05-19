@@ -5,7 +5,6 @@ import ChatWindow from "./ChatWindow/ChatWindow";
 import Infor from "./Infor/infor";
 import SideBar from "../../components/SideBar/Sildebar";
 import { MenuItem } from "../../types/Home";
-import { Content } from "antd/es/layout/layout";
 
 export interface HomeContextProps {
   HandleLogout?: () => void;
@@ -33,13 +32,13 @@ const Home = () => {
       <HomeContext.Provider value={ContextValue}>
         <SideBar />
 
-        <Row style={{ width: "70vw" }}>
-          <Col span={20}>
+        <Row style={{ width: "75vw" }}>
+          <Col span={24}>
             <ChatWindow />
           </Col>
-          <Col span={4}>
+          {/* <Col span={6}>
             <Infor />
-          </Col>
+          </Col> */}
         </Row>
       </HomeContext.Provider>
     </Layout>
