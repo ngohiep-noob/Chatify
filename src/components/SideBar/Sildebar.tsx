@@ -10,12 +10,13 @@ import {
   Typography,
 } from "antd";
 import Logo from "./Logo";
-import UserItem from "./FriendInfo";
+import ListItem from "./FriendInfo";
 import {
   LogoutOutlined,
   TeamOutlined,
   UserAddOutlined,
   UserOutlined,
+  UsergroupAddOutlined,
 } from "@ant-design/icons";
 import styled from "styled-components";
 
@@ -36,16 +37,13 @@ const StyledRow = styled(Row)`
   .ctrl-btn {
     margin: 0 3px;
   }
-  .gmail{
-    font-size:15px;
-  }
-  .name{
-    font-size:18px;
-    font-family: Epilogue;
 
+  .gmail {
+    font-size: 12px;
   }
-  .hrrr{
-   
+  .name {
+    font-size: 17px;
+    font-family: Epilogue;
   }
 `;
 
@@ -55,16 +53,16 @@ const siderItems: MenuProps["items"] = [
     icon: <TeamOutlined />,
     label: "Chat Group",
     children: [
-      <UserItem />,
-      <UserItem />,
-      <UserItem />,
-      <UserItem />,
-      <UserItem />,
-      <UserItem />,
-      <UserItem />,
-      <UserItem />,
-      <UserItem />,
-      <UserItem />,
+      <ListItem />,
+      <ListItem />,
+      <ListItem />,
+      <ListItem />,
+      <ListItem />,
+      <ListItem />,
+      <ListItem />,
+      <ListItem />,
+      <ListItem />,
+      <ListItem />,
     ].map((name, i) => ({ key: "gr-" + i + 1, label: name })),
   },
   {
@@ -83,48 +81,74 @@ export default function SideBar() {
       style={{
         overflow: "auto",
         height: "100vh",
+
         left: 0,
         top: 0,
         bottom: 0,
       }}
-      width={430}
+      width={"30vw"}
       theme="light"
     >
       <Logo />
       <hr style={{ width: "55%", marginBottom: "10px" }}></hr>
       <StyledRow justify="center" align="middle">
-        <Col span={4} className="avatar-col">
+        <Col span={6} className="avatar-col">
           <Avatar
-            size={60}
+            size={55}
             src="https://i.pinimg.com/originals/e1/ed/eb/e1edeb6d3f086b74b0f33be6e665c10f.jpg"
           ></Avatar>
         </Col>
-        <Col span={14} className="details-col">
-          <Text strong className="name">Nguyễn Chánh Nghĩa</Text> <br />
+        <Col span={18} className="details-col">
+          <Text strong className="name">
+            Nguyễn Chánh Nghĩa
+          </Text>
+          <br />
           <Text type="secondary" className="gmail">
             nguyenchanhnghia2917@gmail.com
           </Text>
         </Col>
-        <Col span={6}>
-          <Button type="primary" size="middle" className="ctrl-btn">
+
+        <hr
+          style={{
+            width: "90%",
+            marginBottom: "20px",
+            marginTop: "10px",
+            color: "#27AEF2 ",
+          }}
+        ></hr>
+      </StyledRow>
+
+      <Row
+        style={{ width: "75%", margin: "0 auto" }}
+        align="middle"
+        justify="center"
+      >
+        <Col span={5}>
+          <Button size="large" type="primary">
             <UserAddOutlined />
           </Button>
-          <Button type="primary" size="middle" danger className="ctrl-btn">
+        </Col>
+        <Col span={5}>
+          <Button size="large" type="primary">
+            <UsergroupAddOutlined />
+          </Button>
+        </Col>
+        <Col span={5}>
+          <Button danger size="large" type="primary">
             <LogoutOutlined />
           </Button>
         </Col>
-      
-      <hr
-        style={{ width: "90%", marginBottom: "20px", marginTop: "10px", color:"#27AEF2 "}}
-       className="hrrr"
-      ></hr>
-</StyledRow>
+      </Row>
+
       <Menu
         className="menu"
         mode="inline"
         defaultSelectedKeys={["2"]}
         items={siderItems}
+        onSelect={(item) => {
+          console.log(item);
+        }}
       />
-      </Sider>
+    </Sider>
   );
 }

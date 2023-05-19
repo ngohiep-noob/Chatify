@@ -2,7 +2,7 @@ import React from "react";
 import { Menu, MenuProps } from "antd";
 import { TeamOutlined, UserOutlined } from "@ant-design/icons";
 import styled from "styled-components";
-import UserItem from "./FriendInfo";
+import ListItem from "./FriendInfo";
 
 const siderItems: MenuProps["items"] = [
   {
@@ -10,11 +10,11 @@ const siderItems: MenuProps["items"] = [
     icon: <TeamOutlined />,
     label: "Chat Group",
     children: [
-      <UserItem />,
-      <UserItem />,
-      <UserItem />,
-      <UserItem />,
-      <UserItem />,
+      <ListItem />,
+      <ListItem />,
+      <ListItem />,
+      <ListItem />,
+      <ListItem />,
 
       "chat-group-5",
     ].map((name, i) => ({ key: "gr-" + i + 1, label: name })),
