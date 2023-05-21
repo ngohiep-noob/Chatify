@@ -1,16 +1,13 @@
 import React from "react";
-import { LogoutOutlined, UserAddOutlined } from "@ant-design/icons";
-import { Avatar, Typography, Button } from "antd";
+import { Avatar, Typography } from "antd";
 import styled from "styled-components";
-const Avastyle = styled.div`
-  display: flex;
+const DivStyled = styled.div`
   .name {
     position: absolute;
     top: 0px;
     left: 50px;
-    font-family: Epilogue; /* Heading */
-    font-size: 14px;
-    line-height: 30px;
+    font-family: Epilogue;
+    font-size: 15px;
     color: #171a1fff; /* neutral-900 */
   }
   .gmail {
@@ -18,30 +15,25 @@ const Avastyle = styled.div`
     top: 20px;
     left: 50px;
     font-size: 12px;
-    line-height: 22px;
     color: #171a1fff; /* neutral-900 */
   }
   .Avata {
     position: absolute;
     top: 3px;
     left: 5px;
-    width: 35px;
-    height: 35px;
     font-size: 17px;
-    line-height: 35px;
-    border-radius: 40px;
   }
   .Time {
     position: absolute;
-    top: 7px;
-    left: 270px;
+    top: 10px;
+    right: 10px;
     font-size: 12px;
   }
 `;
 
-export default function UserItem() {
+export default function ListItem() {
   return (
-    <Avastyle>
+    <DivStyled>
       <div>
         <Avatar className="Avata">H</Avatar>
       </div>
@@ -54,6 +46,6 @@ export default function UserItem() {
           0:00 AM
         </Typography.Text>
       </div>
-    </Avastyle>
+    </DivStyled>
   );
 }
