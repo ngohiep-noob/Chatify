@@ -1,6 +1,7 @@
-import React from "react";
 import { Avatar, Typography } from "antd";
 import styled from "styled-components";
+import { MenuItem } from "../../types/Home";
+
 const DivStyled = styled.div`
   .name {
     position: absolute;
@@ -10,19 +11,21 @@ const DivStyled = styled.div`
     font-size: 15px;
     color: #171a1fff; /* neutral-900 */
   }
-  .gmail {
+  .last-msg {
     position: absolute;
     top: 20px;
     left: 50px;
     font-size: 12px;
     color: #171a1fff; /* neutral-900 */
   }
+
   .Avata {
     position: absolute;
     top: 3px;
     left: 5px;
     font-size: 17px;
   }
+  
   .Time {
     position: absolute;
     top: 10px;
@@ -31,19 +34,26 @@ const DivStyled = styled.div`
   }
 `;
 
-export default function ListItem() {
+export default function ListItem({
+  name,
+  lastChattingUsername,
+  lastMessageTime,
+  lastMessage,
+}: MenuItem) {
+  const nameSlipt = name.split(" ");
+
   return (
     <DivStyled>
       <div>
-        <Avatar className="Avata">H</Avatar>
+        <Avatar className="Avata">{nameSlipt[nameSlipt.length - 1][0]}</Avatar>
       </div>
       <div>
         <Typography.Text className="name" strong>
-          Hoàng Khánh{" "}
+          {name}
         </Typography.Text>
-        <Typography.Text className="gmail">You: Hello Cac ban</Typography.Text>
+        <Typography.Text className="last-msg">{lastMessage}</Typography.Text>
         <Typography.Text className="Time" type="secondary">
-          0:00 AM
+          {`${lastChattingUsername}: ${lastMessageTime}`}
         </Typography.Text>
       </div>
     </DivStyled>

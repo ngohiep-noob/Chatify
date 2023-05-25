@@ -1,11 +1,4 @@
-import { Avatar, Typography } from "antd";
-import React from "react";
 import styled from "styled-components";
-import {
-  TeamOutlined,
-  UserOutlined,
-  CheckCircleTwoTone,
-} from "@ant-design/icons";
 
 const Messagestyle = styled.div`
   .message {
@@ -31,15 +24,18 @@ const Messagestyle = styled.div`
     flex-direction: column;
     gap: 10px;
   }
+
   .messageContent p {
     background-color: #ddddf7;
     padding: 10px 20px;
     border-radius: 0px 10px 10px 10px;
     max-width: max-content;
   }
+
   .messageContent img {
     width: 50%;
   }
+
   .owner {
     display: flex;
     flex-direction: row-reverse;
@@ -55,20 +51,23 @@ const Messagestyle = styled.div`
     }
   }
 `;
+
+export interface MessageProps {
+  text: string;
+  displayName: string;
+  photoUrl: string;
+  role: "owner" | "guest";
+}
+
 export default function Message({
   text,
   displayName,
   photoUrl,
-  time,
-}: {
-  text: string;
-  displayName: string;
-  photoUrl: string;
-  time: string;
-}) {
+  role,
+}: MessageProps) {
   return (
     <Messagestyle>
-      <div className={time}>
+      <div className={role}>
         <div className="messageInfo">
           <img src={photoUrl} />
           <span>{displayName}</span>

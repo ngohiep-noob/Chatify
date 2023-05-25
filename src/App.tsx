@@ -1,22 +1,31 @@
-import styled from "styled-components";
 import { useRoutes } from "react-router-dom";
-import Login from "./pages/Login/Login";
-import Home from "./pages/Chatroom/Home";
+import Login from "./pages/Auth/Login";
+import Home from "./pages/Chatroom/Home/Home";
 import NotFound from "./pages/NotFound";
-import SignUp from "./pages/Login/SignUp";
+import SignUp from "./pages/Auth/SignUp";
+import AppProvider from "./context/app.context";
+import AuthLayout from "./pages/Auth/Layout";
 function App() {
   const routes = useRoutes([
     {
       path: "/",
-      element: <Login />,
+      element: (
+        <AuthLayout>
+          <Login />
+        </AuthLayout>
+      ),
+    },
+    {
+      path: "/signUp",
+      element: (
+        <AuthLayout>
+          <SignUp />
+        </AuthLayout>
+      ),
     },
     {
       path: "/home",
       element: <Home />,
-    },
-    {
-      path: "/signUp",
-      element: <SignUp />,
     },
     {
       path: "*",
@@ -24,7 +33,11 @@ function App() {
     },
   ]);
 
-  return <>{routes}</>;
+  return (
+    <>
+      <AppProvider>{routes}</AppProvider>
+    </>
+  );
 }
 
 export default App;
