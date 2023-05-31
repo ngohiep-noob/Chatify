@@ -10,8 +10,11 @@ import {
 import styled from "styled-components";
 import React, { useEffect } from "react";
 import { AppContext } from "../../context/app.context";
-import { getRoomList } from "../../apis/user.api";
+import { getRoomList, getUserInfor } from "../../apis/user.api";
 import { MenuItem } from "../../types/Home";
+import {ContextValue} from "../../context/app.context"
+import axios from "axios";
+import { User } from "../../types/User";
 
 const { Sider } = Layout;
 const { Text } = Typography;
@@ -57,6 +60,16 @@ export default function SideBar() {
 
 
         // fetch profile ở đây
+        const profile = await getUserInfor();
+        console.log(profile);
+        const userr: ContextValue["user"] ={
+          id:profile.id,
+          email:profile.email,
+          name: profile.fullName,
+        }
+
+        if (action?.setUserInfo) action.setUserInfo(userr);
+
       })();
     } catch (error) {
       console.log("Side bar error: ", error);

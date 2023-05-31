@@ -1,5 +1,5 @@
 import axios from "axios";
-import { RoomItem } from "../types/User";
+import { RoomItem,User } from "../types/User";
 
 type GetRoomResponse = {
   data: RoomItem[];
@@ -21,5 +21,22 @@ export const getRoomList = async (): Promise<RoomItem[]> => {
     }
   );
 
+  return response.data.data;
+};
+type GetUserInfor= {
+  data: User;
+  message: string;
+  status: string;
+};
+export const getUserInfor = async(): Promise<User> => {
+  const token= localStorage.getItem('token');
+  const response = await axios.get<GetUserInfor>(
+    "http://localhost:8888/users/rooms",
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
   return response.data.data;
 };
