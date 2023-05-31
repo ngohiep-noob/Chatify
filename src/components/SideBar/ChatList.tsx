@@ -2,7 +2,7 @@ import React from "react";
 import { Menu, MenuProps } from "antd";
 import { TeamOutlined, UserOutlined } from "@ant-design/icons";
 import styled from "styled-components";
-import ListItem from "./FriendInfo";
+import ListItem from "./ListItem";
 
 const siderItems: MenuProps["items"] = [
   {

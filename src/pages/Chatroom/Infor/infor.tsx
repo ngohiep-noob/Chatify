@@ -1,11 +1,5 @@
-import React from "react";
-import {
-  LogoutOutlined,
-  PhoneOutlined,
-  PhoneTwoTone,
-  MailTwoTone,
-} from "@ant-design/icons";
-import { Row, Col, Avatar, Typography, Image } from "antd";
+import { PhoneTwoTone, MailTwoTone } from "@ant-design/icons";
+import { Avatar, Typography } from "antd";
 import styled from "styled-components";
 const Inforstyle = styled.div`
   //background: #B2F6BF;

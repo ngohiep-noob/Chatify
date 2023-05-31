@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Avatar,
   Button,
@@ -10,7 +9,7 @@ import {
   Typography,
 } from "antd";
 import Logo from "./Logo";
-import ListItem from "./FriendInfo";
+import ListItem from "./ListItem";
 import {
   LogoutOutlined,
   TeamOutlined,
@@ -19,6 +18,9 @@ import {
   UsergroupAddOutlined,
 } from "@ant-design/icons";
 import styled from "styled-components";
+import { MenuItem } from "../../types/Home";
+import React from "react";
+import { AppContext } from "../../context/app.context";
 
 const { Sider } = Layout;
 const { Text } = Typography;
@@ -34,48 +36,19 @@ const StyledRow = styled(Row)`
     height: 60%;
   }
 
-  .ctrl-btn {
-    margin: 0 3px;
-  }
-
   .gmail {
     font-size: 12px;
   }
+
   .name {
     font-size: 17px;
     font-family: Epilogue;
   }
 `;
 
-const siderItems: MenuProps["items"] = [
-  {
-    key: "chat-group",
-    icon: <TeamOutlined />,
-    label: "Chat Group",
-    children: [
-      <ListItem />,
-      <ListItem />,
-      <ListItem />,
-      <ListItem />,
-      <ListItem />,
-      <ListItem />,
-      <ListItem />,
-      <ListItem />,
-      <ListItem />,
-      <ListItem />,
-    ].map((name, i) => ({ key: "gr-" + i + 1, label: name })),
-  },
-  {
-    key: "chat-friends",
-    icon: <UserOutlined />,
-    label: "Friends",
-    children: ["friend-1", "friend-2", "friend-3", "friend-4"].map(
-      (name, i) => ({ key: "fr-" + i + 1, label: name })
-    ),
-  },
-];
-
 export default function SideBar() {
+  const { value, action } = React.useContext(AppContext);
+
   return (
     <Sider
       style={{
@@ -99,11 +72,11 @@ export default function SideBar() {
         </Col>
         <Col span={18} className="details-col">
           <Text strong className="name">
-            Nguyễn Chánh Nghĩa
+            {value?.user?.name}
           </Text>
           <br />
           <Text type="secondary" className="gmail">
-            nguyenchanhnghia2917@gmail.com
+            {value?.user?.email}
           </Text>
         </Col>
 
@@ -120,20 +93,20 @@ export default function SideBar() {
       <Row
         style={{ width: "75%", margin: "0 auto" }}
         align="middle"
-        justify="center"
+        justify="space-evenly"
       >
         <Col span={5}>
-          <Button size="large" type="primary">
+          <Button type="primary" onClick={action?.HandleAddFriend}>
             <UserAddOutlined />
           </Button>
         </Col>
         <Col span={5}>
-          <Button size="large" type="primary">
+          <Button type="primary" onClick={action?.HandleAddGroup}>
             <UsergroupAddOutlined />
           </Button>
         </Col>
         <Col span={5}>
-          <Button danger size="large" type="primary">
+          <Button danger type="primary" onClick={action?.HandleLogout}>
             <LogoutOutlined />
           </Button>
         </Col>
@@ -142,10 +115,33 @@ export default function SideBar() {
       <Menu
         className="menu"
         mode="inline"
-        defaultSelectedKeys={["2"]}
-        items={siderItems}
+        items={[
+          {
+            key: "chat-group",
+            icon: <TeamOutlined />,
+            label: "Chat Group",
+            children: value?.friendList
+              ? value.friendList.map((item) => ({
+                  key: item.id,
+                  label: <ListItem {...item} />,
+                }))
+              : [],
+          },
+          {
+            key: "chat-friends",
+            icon: <UserOutlined />,
+            label: "Friends",
+            children: value?.groupList
+              ? value.groupList.map((item) => ({
+                  key: item.id,
+                  label: <ListItem {...item} />,
+                }))
+              : [],
+          },
+        ]}
         onSelect={(item) => {
-          console.log(item);
+          if (action?.setSelectedItem)
+            action?.setSelectedItem(item.key as string);
         }}
       />
     </Sider>
