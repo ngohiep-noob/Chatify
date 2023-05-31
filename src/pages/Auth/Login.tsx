@@ -3,7 +3,7 @@ import { Button, Checkbox, Form, Input, Spin } from "antd";
 import styled from "styled-components";
 import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
-import axios from 'axios';
+import axios from "axios";
 
 const StyledForm = styled(Form)`
   background-color: while;
@@ -61,17 +61,21 @@ const StyledForm = styled(Form)`
 const Login = () => {
   const navigator = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [token, setToken] = useState('');
+  const [token, setToken] = useState("");
+
   const OnFinish = (values: any) => {
     console.log(values);
 
     const fetchData = async () => {
       try {
-        const response = await axios.post('http://localhost:8888/auth/login', {
-          key: 'values'
+      
+        const response = await axios.post("http://localhost:8888/auth/login", {
+          username: values.username,
+          password: values.password,
         });
+        
         console.log(response.data);
-        console.log('Login successful');  
+        console.log("Login successful");
         setTimeout(() => {
           navigator("/home");
           setLoading(false);
