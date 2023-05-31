@@ -1,5 +1,5 @@
 import axios from "axios";
-import { RoomItem,User } from "../types/User";
+import { RoomItem ,User} from "../types/User";
 
 type GetRoomResponse = {
   data: RoomItem[];
@@ -7,10 +7,9 @@ type GetRoomResponse = {
   status: string;
 };
 
-export const getRoomList = async (): Promise<RoomItem[]> => {
+export const getRoomList = async (): Promise<GetRoomResponse> => {
   // const token = localStorage.getItem("token");
-  const token =
-    "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsInN1YiI6InVzZXIyIiwiaWF0IjoxNjg1NTQ5MjcxLCJleHAiOjE2ODU1NjAwNzF9.09-V_uTrKDwAsGpMYdNMUEn4JfEV-2nZPXsVCTFuiLA";
+  const token = localStorage.getItem('token');
 
   const response = await axios.get<GetRoomResponse>(
     "http://localhost:8888/users/rooms",
@@ -21,14 +20,14 @@ export const getRoomList = async (): Promise<RoomItem[]> => {
     }
   );
 
-  return response.data.data;
+  return response.data;
 };
 type GetUserInfor= {
   data: User;
   message: string;
   status: string;
 };
-export const getUserInfor = async(): Promise<User> => {
+export const getUserInfor = async(): Promise<GetUserInfor> => {
   const token= localStorage.getItem('token');
   const response = await axios.get<GetUserInfor>(
     "http://localhost:8888/users/rooms",
@@ -38,5 +37,5 @@ export const getUserInfor = async(): Promise<User> => {
       },
     }
   );
-  return response.data.data;
+  return response.data;
 };

@@ -62,9 +62,11 @@ export default function SideBar() {
         // fetch profile ở đây
         const profile = await getUserInfor();
         console.log(profile);
-       
+        // const userr: ContextValue ={
+        //   id:profile.data.id,
+        // }
 
-      //  if (action?.setUserInfo) action.setUserInfo(userr);
+        // if (action?.setUserInfo) action.setUserInfo(userr);
 
       })();
     } catch (error) {

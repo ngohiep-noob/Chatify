@@ -17,12 +17,12 @@ import {
 import { useContext, useEffect } from "react";
 import { AppContext } from "../../context/app.context";
 import React from "react";
-import { GetChatInfo } from "../../apis/chat.api";
 import Message from "../../components/MainChat/Message";
+import { GetChatHistory } from "../../apis/chat.api";
 
 interface MessageProps {
-  id: string;
-  name: string;
+  senderId: string;
+  senderName: string;
   message: string;
 }
 
@@ -32,12 +32,25 @@ export default function ChatWindow() {
   const [chatName, setChatName] = React.useState<string>("");
 
   useEffect(() => {
-    if (value?.selectedItemId) {
-      // call api
-      const chatInfo = GetChatInfo(value?.selectedItemId || "");
-      // console.log(chatInfo);
-      setChatList(chatInfo?.msgs || []);
-      setChatName(chatInfo?.chatName || "");
+    try {
+      (async () => {
+        const chatHistory = await GetChatHistory(value?.selectedItemId || "");
+        const { data } = chatHistory;
+
+        console.log("Chat history: ", data);
+
+        if (chatHistory) {
+          setChatName(data.name);
+          const msgs: MessageProps[] = data.chats.map((item) => ({
+            senderId: item.user.id || "",
+            senderName: item.user.username || "",
+            message: item.message,
+          }));
+          setChatList(msgs);
+        }
+      })();
+    } catch (error) {
+      console.log("Get chat history error: ", error);
     }
   }, [value?.selectedItemId]);
 
@@ -118,8 +131,8 @@ export default function ChatWindow() {
                   photoUrl={
                     "https://i.pinimg.com/originals/e1/ed/eb/e1edeb6d3f086b74b0f33be6e665c10f.jpg"
                   }
-                  displayName={item.name}
-                  isOwner={item.id === value.user?.id}
+                  displayName={item.senderName}
+                  isOwner={item.senderId === value.user?.id}
                   key={index}
                 ></Message>
               );
