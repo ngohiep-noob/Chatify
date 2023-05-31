@@ -1,6 +1,6 @@
 import { useRoutes } from "react-router-dom";
 import Login from "./pages/Auth/Login";
-import Home from "./pages/Home/Home";
+import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import SignUp from "./pages/Auth/SignUp";
 import AppProvider from "./context/app.context";

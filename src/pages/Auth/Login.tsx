@@ -3,6 +3,7 @@ import { Button, Checkbox, Form, Input, Spin } from "antd";
 import styled from "styled-components";
 import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
+import axios from 'axios';
 
 const StyledForm = styled(Form)`
   background-color: while;
@@ -60,35 +61,17 @@ const StyledForm = styled(Form)`
 const Login = () => {
   const navigator = useNavigate();
   const [loading, setLoading] = useState(false);
-
+  const [token, setToken] = useState('');
   const OnFinish = (values: any) => {
-    // try {
-    //   console.log("Received values of form: ", values);
-    //   setLoading(true);
-    //   // call api -> output: token
-    //   // localStorage.setItem("token", token);
-    //   // localStorage.getItem("token");
+    console.log(values);
 
-    //   setTimeout(() => {
-    //     navigator("/home");
-    //     setLoading(false);
-    //   }, 500);
-    //   // thành công
-    // } catch (error) {
-    //   // xuất lỗi
-    // }
     const fetchData = async () => {
       try {
-        const data = {
-          username: "user2",
-          password: "123456",
-        };
-        const response = await axios.post(
-          "http://localhost:8888/auth/login",
-          data
-        );
-
+        const response = await axios.post('http://localhost:8888/auth/login', {
+          key: 'values'
+        });
         console.log(response.data);
+        console.log('Login successful');  
         setTimeout(() => {
           navigator("/home");
           setLoading(false);
@@ -98,7 +81,6 @@ const Login = () => {
         console.error(error);
       }
     };
-
     fetchData();
   };
 
