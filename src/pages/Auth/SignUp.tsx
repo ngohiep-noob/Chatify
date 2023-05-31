@@ -65,7 +65,7 @@ const Login = () => {
     console.log("Received values of form: ", values);
     setLoading(true);
     setTimeout(() => {
-      navigator("/home");
+      navigator("/login");
       setLoading(false);
     }, 500);
   };

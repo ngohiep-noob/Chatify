@@ -1,11 +1,12 @@
 import React, { useMemo } from "react";
 import { MenuItem } from "../types/Home";
 import { useNavigate } from "react-router-dom";
+import { chatType } from "../components/SideBar/SideBar";
 
 export interface ContextValue {
   friendList?: MenuItem[];
   groupList?: MenuItem[];
-  selectedItem?: string;
+  selectedItemId?: string;
   user?: {
     id: string;
     name: string;
@@ -20,7 +21,7 @@ export interface ContextAction {
   setFriendList?: (newUserList: MenuItem[]) => void;
   setGroupList?: (newGroupList: MenuItem[]) => void;
   setUserInfo?: (newUserInfo: ContextValue["user"]) => void;
-  setSelectedItem?: (newSelectedItem: string) => void;
+  setSelectedItem?: (newSelectedItem: string, type: chatType) => void;
 }
 
 export interface ContextProps {
@@ -39,7 +40,7 @@ const AppProvider = ({ children }: AppProvider) => {
   const [state, setState] = React.useState<ContextValue>({
     friendList: [],
     groupList: [],
-    selectedItem: "",
+    selectedItemId: "",
     user: {
       id: "1",
       name: "Ngo Hiep",
@@ -68,10 +69,10 @@ const AppProvider = ({ children }: AppProvider) => {
     }));
   };
 
-  const setSelectedItem = (newSelectedItem: string) => {
+  const setSelectedItem = (newSelectedItem: string, type: chatType) => {
     setState((prevState) => ({
       ...prevState,
-      selectedItem: newSelectedItem,
+      selectedItemId: newSelectedItem,
     }));
   };
 

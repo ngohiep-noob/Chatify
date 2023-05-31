@@ -15,10 +15,10 @@ import {
 } from "@ant-design/icons";
 
 import { useContext, useEffect } from "react";
-import { AppContext } from "../../../context/app.context";
+import { AppContext } from "../../context/app.context";
 import React from "react";
-import { GetChatInfo } from "../../../apis/chat.api";
-import Message from "../../../components/MainChat/Message";
+import { GetChatInfo } from "../../apis/chat.api";
+import Message from "../../components/MainChat/Message";
 
 interface MessageProps {
   id: string;
@@ -32,13 +32,14 @@ export default function ChatWindow() {
   const [chatName, setChatName] = React.useState<string>("");
 
   useEffect(() => {
-    if (value?.selectedItem) {
-      const chatInfo = GetChatInfo(value?.selectedItem || "");
-      console.log(chatInfo);
+    if (value?.selectedItemId) {
+      // call api
+      const chatInfo = GetChatInfo(value?.selectedItemId || "");
+      // console.log(chatInfo);
       setChatList(chatInfo?.msgs || []);
       setChatName(chatInfo?.chatName || "");
     }
-  }, [value?.selectedItem]);
+  }, [value?.selectedItemId]);
 
   return (
     <div
@@ -46,7 +47,7 @@ export default function ChatWindow() {
         width: "100%",
       }}
     >
-      {!value?.selectedItem && (
+      {!value?.selectedItemId && (
         <Empty
           description={false}
           style={{
@@ -57,7 +58,7 @@ export default function ChatWindow() {
           }}
         />
       )}
-      {value?.selectedItem && (
+      {value?.selectedItemId && (
         <>
           <Row style={{ height: "10vh" }} align="middle">
             <Col
@@ -110,7 +111,7 @@ export default function ChatWindow() {
               backgroundColor: "#FFF",
             }}
           >
-            {chatList.map((item) => {
+            {chatList.map((item, index) => {
               return (
                 <Message
                   text={item.message}
@@ -118,7 +119,8 @@ export default function ChatWindow() {
                     "https://i.pinimg.com/originals/e1/ed/eb/e1edeb6d3f086b74b0f33be6e665c10f.jpg"
                   }
                   displayName={item.name}
-                  role={item.id === value.user?.id ? "owner" : "guest"}
+                  isOwner={item.id === value.user?.id}
+                  key={index}
                 ></Message>
               );
             })}
