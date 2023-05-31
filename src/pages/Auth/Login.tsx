@@ -68,12 +68,19 @@ const Login = () => {
 
     const fetchData = async () => {
       try {
-      
-        const response = await axios.post("http://localhost:8888/auth/login", {
-          username: values.username,
-          password: values.password,
-        });
-        
+        const response = await axios.post(
+          "http://localhost:8888/auth/login",
+          {
+            username: values.username,
+            password: values.password,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
         console.log(response.data);
         console.log("Login successful");
         setTimeout(() => {
