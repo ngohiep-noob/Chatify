@@ -73,7 +73,6 @@ const Login = () => {
           username: values.username,
           password: values.password,
         });
-        
         console.log(response.data);
         console.log("Login successful");
         setTimeout(() => {
