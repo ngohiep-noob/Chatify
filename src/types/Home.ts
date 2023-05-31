@@ -7,6 +7,6 @@ export interface MenuItem {
   id: string;
   name: string;
   lastMessage: string;
-  lastMessageTime: string;
+  lastMessageTime: Date;
   lastChattingUsername: string;
 }

@@ -1,33 +1,20 @@
-import {
-  Avatar,
-  Button,
-  Col,
-  Layout,
-  Menu,
-  MenuProps,
-  Row,
-  Typography,
-} from "antd";
+import { Avatar, Button, Col, Layout, Menu, Row, Typography } from "antd";
 import Logo from "./Logo";
 import ListItem from "./ListItem";
 import {
   LogoutOutlined,
   TeamOutlined,
   UserAddOutlined,
-  UserOutlined,
   UsergroupAddOutlined,
 } from "@ant-design/icons";
 import styled from "styled-components";
-import React from "react";
+import React, { useEffect } from "react";
 import { AppContext } from "../../context/app.context";
+import { getRoomList } from "../../apis/user.api";
+import { MenuItem } from "../../types/Home";
 
 const { Sider } = Layout;
 const { Text } = Typography;
-
-export enum chatType {
-  FRIEND = "FRIENDS",
-  ROOM = "ROOMS",
-}
 
 const StyledRow = styled(Row)`
   .avatar-col {
@@ -52,6 +39,29 @@ const StyledRow = styled(Row)`
 
 export default function SideBar() {
   const { value, action } = React.useContext(AppContext);
+
+  useEffect(() => {
+    try {
+      (async () => {
+        const roomList = await getRoomList();
+        console.log("roomList: ", roomList);
+        const menuItemList: MenuItem[] = roomList.map((room) => ({
+          id: room.id,
+          name: room.name,
+          lastMessage: room.lastMessage.message,
+          lastMessageTime: room.lastMessage.createdAt,
+          lastChattingUsername: room.lastMessage.user?.username || "",
+        }));
+
+        if (action?.setRoomList) action.setRoomList(menuItemList);
+
+
+        // fetch profile ở đây
+      })();
+    } catch (error) {
+      console.log("Side bar error: ", error);
+    }
+  }, []);
 
   return (
     <Sider
@@ -121,22 +131,11 @@ export default function SideBar() {
         mode="inline"
         items={[
           {
-            key: chatType.FRIEND,
-            icon: <UserOutlined />,
-            label: "Friends",
-            children: value?.friendList
-              ? value.friendList.map((item) => ({
-                  key: item.id,
-                  label: <ListItem {...item} />,
-                }))
-              : [],
-          },
-          {
-            key: chatType.ROOM,
+            key: "room",
             icon: <TeamOutlined />,
             label: "Rooms",
-            children: value?.groupList
-              ? value.groupList.map((item) => ({
+            children: value?.roomList
+              ? value.roomList.map((item) => ({
                   key: item.id,
                   label: <ListItem {...item} />,
                 }))
@@ -144,9 +143,8 @@ export default function SideBar() {
           },
         ]}
         onSelect={(item) => {
-          const { key, keyPath } = item;
-          if (action?.setSelectedItem)
-            action?.setSelectedItem(key as string, keyPath[1] as chatType);
+          const { key } = item;
+          if (action?.setSelectedItem) action?.setSelectedItem(key as string);
         }}
       />
     </Sider>

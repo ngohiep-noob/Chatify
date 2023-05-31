@@ -1,52 +1,25 @@
-// API ở đây là các hàm giả lập API, không phải API thật sự
-export const GetUserList = () => {
-  return [
-    {
-      id: "u1",
-      name: "Ngô Hiệp",
-      lastMessage: "Hello 111",
-      lastMessageTime: "10:00",
-      lastChattingUsername: "Hiep",
-    },
-    {
-      id: "u2",
-      name: "Nguyễn Chánh Nghĩa",
-      lastMessage: "Hello 333",
-      lastMessageTime: "11:00",
-      lastChattingUsername: "Khanh",
-    },
-    {
-      id: "u3",
-      name: "User 3",
-      lastMessage: "Hello 123",
-      lastMessageTime: "12:00",
-      lastChattingUsername: "Hung",
-    },
-  ];
+import axios from "axios";
+import { RoomItem } from "../types/User";
+
+type GetRoomResponse = {
+  data: RoomItem[];
+  message: string;
+  status: string;
 };
 
-export const getGroupList = () => {
-  return [
+export const getRoomList = async (): Promise<RoomItem[]> => {
+  // const token = localStorage.getItem("token");
+  const token =
+    "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsInN1YiI6InVzZXIyIiwiaWF0IjoxNjg1NTQ5MjcxLCJleHAiOjE2ODU1NjAwNzF9.09-V_uTrKDwAsGpMYdNMUEn4JfEV-2nZPXsVCTFuiLA";
+
+  const response = await axios.get<GetRoomResponse>(
+    "http://localhost:8888/users/rooms",
     {
-      id: "g4",
-      name: "Group 4",
-      lastMessage: "Hello 111",
-      lastMessageTime: "10:00",
-      lastChattingUsername: "Hiep",
-    },
-    {
-      id: "g5",
-      name: "Group 5",
-      lastMessage: "Hello 333",
-      lastMessageTime: "11:00",
-      lastChattingUsername: "Khanh",
-    },
-    {
-      id: "g6",
-      name: "Group 6",
-      lastMessage: "Hello 123",
-      lastMessageTime: "12:00",
-      lastChattingUsername: "Hung",
-    },
-  ];
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data.data;
 };
