@@ -26,22 +26,15 @@ const TestChat = () => {
 
   const onConnected = (stompClient: Client) => {
     console.log("connected");
-    stompClient.subscribe("/chatroom/public", onReceiveMessage);
-    const initMsg = {
-      sender: "Browser",
-      receiver: "public",
-      message: "Hello",
-    };
-    stompClient.send("/app/message", {}, JSON.stringify(initMsg));
-
     groupId.current = prompt("Enter group id") || "public";
     userName.current = prompt("Enter user name") || "Ngo Hiep";
 
     const joinMsg = {
-      sender: "Browser",
+      sender: userName.current,
       receiver: groupId.current,
-      message: "Join room",
+      message: `Hi room ${groupId.current}! My name's ${userName.current}`,
     };
+
     stompClient.subscribe(`/chatroom/${groupId.current}`, onReceiveMessage);
     stompClient.send("/app/group-chat", {}, JSON.stringify(joinMsg));
   };

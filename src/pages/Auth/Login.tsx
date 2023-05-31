@@ -62,12 +62,44 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   const OnFinish = (values: any) => {
-    console.log("Received values of form: ", values);
-    setLoading(true);
-    setTimeout(() => {
-      navigator("/home");
-      setLoading(false);
-    }, 500);
+    // try {
+    //   console.log("Received values of form: ", values);
+    //   setLoading(true);
+    //   // call api -> output: token
+    //   // localStorage.setItem("token", token);
+    //   // localStorage.getItem("token");
+
+    //   setTimeout(() => {
+    //     navigator("/home");
+    //     setLoading(false);
+    //   }, 500);
+    //   // thành công
+    // } catch (error) {
+    //   // xuất lỗi
+    // }
+    const fetchData = async () => {
+      try {
+        const data = {
+          username: "user2",
+          password: "123456",
+        };
+        const response = await axios.post(
+          "http://localhost:8888/auth/login",
+          data
+        );
+
+        console.log(response.data);
+        setTimeout(() => {
+          navigator("/home");
+          setLoading(false);
+        }, 500);
+        // thành công
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
   };
 
   return (

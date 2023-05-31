@@ -56,18 +56,18 @@ export interface MessageProps {
   text: string;
   displayName: string;
   photoUrl: string;
-  role: "owner" | "guest";
+  isOwner: boolean;
 }
 
 export default function Message({
   text,
   displayName,
   photoUrl,
-  role,
+  isOwner,
 }: MessageProps) {
   return (
     <Messagestyle>
-      <div className={role}>
+      <div className={isOwner === true ? "owner" : ""}>
         <div className="messageInfo">
           <img src={photoUrl} />
           <span>{displayName}</span>

@@ -25,7 +25,7 @@ const DivStyled = styled.div`
     left: 5px;
     font-size: 17px;
   }
-  
+
   .Time {
     position: absolute;
     top: 10px;
@@ -51,9 +51,9 @@ export default function ListItem({
         <Typography.Text className="name" strong>
           {name}
         </Typography.Text>
-        <Typography.Text className="last-msg">{lastMessage}</Typography.Text>
+        <Typography.Text className="last-msg">{`${lastChattingUsername}: ${lastMessage}`}</Typography.Text>
         <Typography.Text className="Time" type="secondary">
-          {`${lastChattingUsername}: ${lastMessageTime}`}
+          {lastMessageTime}
         </Typography.Text>
       </div>
     </DivStyled>

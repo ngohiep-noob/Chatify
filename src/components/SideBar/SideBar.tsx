@@ -18,12 +18,16 @@ import {
   UsergroupAddOutlined,
 } from "@ant-design/icons";
 import styled from "styled-components";
-import { MenuItem } from "../../types/Home";
 import React from "react";
 import { AppContext } from "../../context/app.context";
 
 const { Sider } = Layout;
 const { Text } = Typography;
+
+export enum chatType {
+  FRIEND = "FRIENDS",
+  ROOM = "ROOMS",
+}
 
 const StyledRow = styled(Row)`
   .avatar-col {
@@ -117,9 +121,9 @@ export default function SideBar() {
         mode="inline"
         items={[
           {
-            key: "chat-group",
-            icon: <TeamOutlined />,
-            label: "Chat Group",
+            key: chatType.FRIEND,
+            icon: <UserOutlined />,
+            label: "Friends",
             children: value?.friendList
               ? value.friendList.map((item) => ({
                   key: item.id,
@@ -128,9 +132,9 @@ export default function SideBar() {
               : [],
           },
           {
-            key: "chat-friends",
-            icon: <UserOutlined />,
-            label: "Friends",
+            key: chatType.ROOM,
+            icon: <TeamOutlined />,
+            label: "Rooms",
             children: value?.groupList
               ? value.groupList.map((item) => ({
                   key: item.id,
@@ -140,8 +144,9 @@ export default function SideBar() {
           },
         ]}
         onSelect={(item) => {
+          const { key, keyPath } = item;
           if (action?.setSelectedItem)
-            action?.setSelectedItem(item.key as string);
+            action?.setSelectedItem(key as string, keyPath[1] as chatType);
         }}
       />
     </Sider>
