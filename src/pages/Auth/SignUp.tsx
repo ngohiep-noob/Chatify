@@ -1,8 +1,9 @@
-import { LockOutlined, UserOutlined, MailOutlined } from "@ant-design/icons";
+import { LockOutlined, UserOutlined, MailOutlined,GithubFilled } from "@ant-design/icons";
 import { Button, Form, Input, Spin } from "antd";
 import styled from "styled-components";
 import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
+import axios from "axios";
 
 const StyledForm = styled(Form)`
   background-color: while;
@@ -62,12 +63,37 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   const OnFinish = (values: any) => {
-    console.log("Received values of form: ", values);
-    setLoading(true);
-    setTimeout(() => {
-      navigator("/login");
-      setLoading(false);
-    }, 500);
+    const fetchData = async () => {
+      try {
+        const response = await axios.post(
+          "http://localhost:8888/auth/register",
+          {
+            username: values.username,
+            password: values.password,
+            email: values.email,
+            fullname: values.fullname,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const token = response.data.token; 
+        localStorage.setItem('token', token);
+        console.log(response.data);
+        console.log(token);
+        console.log("Register successful");
+        setTimeout(() => {
+          navigator("/");
+          setLoading(false);
+        }, 500);
+        // thành công
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
   };
 
   return (
@@ -91,16 +117,6 @@ const Login = () => {
           />
         </Form.Item>
         <Form.Item
-          name="Email"
-          rules={[{ required: true, message: "Please input your Email!" }]}
-        >
-          <Input
-            prefix={<MailOutlined className="site-form-item-icon" />}
-            placeholder="Email"
-            className="input"
-          />
-        </Form.Item>
-        <Form.Item
           name="password"
           rules={[{ required: true, message: "Please input your Password!" }]}
         >
@@ -112,7 +128,18 @@ const Login = () => {
           />
         </Form.Item>
         <Form.Item
-          name="password"
+          name="email"
+          rules={[{ required: true, message: "Please input your Email!" }]}
+        >
+          <Input
+            prefix={<MailOutlined className="site-form-item-icon" />}
+            placeholder="Email"
+            className="input"
+          />
+        </Form.Item>
+       
+        <Form.Item
+          name="fullname"
           rules={[
             {
               required: true,
@@ -121,9 +148,8 @@ const Login = () => {
           ]}
         >
           <Input
-            prefix={<LockOutlined className="site-form-item-icon" />}
-            type="password"
-            placeholder="Password again"
+            prefix={<GithubFilled className="site-form-item-icon" />}
+            placeholder="Fullname"
             className="input"
           />
         </Form.Item>

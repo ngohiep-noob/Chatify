@@ -80,8 +80,10 @@ const Login = () => {
             },
           }
         );
-
+        const token = response.data.token; 
+        localStorage.setItem('token', token);
         console.log(response.data);
+        console.log(token);
         console.log("Login successful");
         setTimeout(() => {
           navigator("/home");
