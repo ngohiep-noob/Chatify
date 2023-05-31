@@ -1,11 +1,10 @@
 import React, { useMemo } from "react";
 import { MenuItem } from "../types/Home";
 import { useNavigate } from "react-router-dom";
-import { chatType } from "../components/SideBar/SideBar";
 
 export interface ContextValue {
   friendList?: MenuItem[];
-  groupList?: MenuItem[];
+  roomList?: MenuItem[];
   selectedItemId?: string;
   user?: {
     id: string;
@@ -19,9 +18,9 @@ export interface ContextAction {
   HandleAddFriend?: () => void;
   HandleAddGroup?: () => void;
   setFriendList?: (newUserList: MenuItem[]) => void;
-  setGroupList?: (newGroupList: MenuItem[]) => void;
+  setRoomList?: (newGroupList: MenuItem[]) => void;
   setUserInfo?: (newUserInfo: ContextValue["user"]) => void;
-  setSelectedItem?: (newSelectedItem: string, type: chatType) => void;
+  setSelectedItem?: (newSelectedItem: string) => void;
 }
 
 export interface ContextProps {
@@ -39,7 +38,7 @@ const AppProvider = ({ children }: AppProvider) => {
 
   const [state, setState] = React.useState<ContextValue>({
     friendList: [],
-    groupList: [],
+    roomList: [],
     selectedItemId: "",
     user: {
       id: "1",
@@ -55,10 +54,10 @@ const AppProvider = ({ children }: AppProvider) => {
     }));
   };
 
-  const setGroupList = (newGroupList: MenuItem[]) => {
+  const setRoomList = (newGroupList: MenuItem[]) => {
     setState((prevState) => ({
       ...prevState,
-      groupList: newGroupList,
+      roomList: newGroupList,
     }));
   };
 
@@ -69,14 +68,14 @@ const AppProvider = ({ children }: AppProvider) => {
     }));
   };
 
-  const setSelectedItem = (newSelectedItem: string, type: chatType) => {
+  const setSelectedItem = (newSelectedItem: string) => {
     setState((prevState) => ({
       ...prevState,
       selectedItemId: newSelectedItem,
     }));
   };
 
-  const SetContext = useMemo(
+  const SetContext: ContextAction = useMemo(
     () => ({
       HandleLogout: () => {
         localStorage.removeItem("token");
@@ -89,7 +88,7 @@ const AppProvider = ({ children }: AppProvider) => {
         console.log("HandleAddGroup");
       },
       setFriendList,
-      setGroupList,
+      setRoomList,
       setUserInfo,
       setSelectedItem,
     }),
