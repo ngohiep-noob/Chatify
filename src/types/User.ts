@@ -1,3 +1,5 @@
+import { Message } from "./Chat";
+
 export type User = {
   id?: string;
   username?: string;
@@ -11,9 +13,5 @@ export type RoomItem = {
   id: string;
   name: string;
   desc: string;
-  lastMessage: {
-    message: string;
-    user: User;
-    createdAt: Date;
-  };
+  lastMessage: Message;
 };

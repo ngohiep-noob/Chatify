@@ -12,6 +12,7 @@ import React, { useEffect } from "react";
 import { AppContext } from "../../context/app.context";
 import { getRoomList } from "../../apis/user.api";
 import { MenuItem } from "../../types/Home";
+import { GetChatHistory } from "../../apis/chat.api";
 
 const { Sider } = Layout;
 const { Text } = Typography;
@@ -45,7 +46,7 @@ export default function SideBar() {
       (async () => {
         const roomList = await getRoomList();
         console.log("roomList: ", roomList);
-        const menuItemList: MenuItem[] = roomList.map((room) => ({
+        const menuItemList: MenuItem[] = roomList.data.map((room) => ({
           id: room.id,
           name: room.name,
           lastMessage: room.lastMessage.message,
@@ -54,14 +55,16 @@ export default function SideBar() {
         }));
 
         if (action?.setRoomList) action.setRoomList(menuItemList);
-
-
-        // fetch profile ở đây
       })();
     } catch (error) {
       console.log("Side bar error: ", error);
     }
   }, []);
+
+  const handleSelectedItem = (item: any) => {
+    const { key } = item;
+    if (action?.setSelectedItem) action?.setSelectedItem(key as string);
+  };
 
   return (
     <Sider
@@ -142,10 +145,7 @@ export default function SideBar() {
               : [],
           },
         ]}
-        onSelect={(item) => {
-          const { key } = item;
-          if (action?.setSelectedItem) action?.setSelectedItem(key as string);
-        }}
+        onSelect={handleSelectedItem}
       />
     </Sider>
   );

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { RoomItem } from "../types/User";
+import { getToken } from "../utils/token.utils";
 
 type GetRoomResponse = {
   data: RoomItem[];
@@ -7,10 +8,9 @@ type GetRoomResponse = {
   status: string;
 };
 
-export const getRoomList = async (): Promise<RoomItem[]> => {
+export const getRoomList = async (): Promise<GetRoomResponse> => {
   // const token = localStorage.getItem("token");
-  const token =
-    "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsInN1YiI6InVzZXIyIiwiaWF0IjoxNjg1NTQ5MjcxLCJleHAiOjE2ODU1NjAwNzF9.09-V_uTrKDwAsGpMYdNMUEn4JfEV-2nZPXsVCTFuiLA";
+  const token = getToken();
 
   const response = await axios.get<GetRoomResponse>(
     "http://localhost:8888/users/rooms",
@@ -21,5 +21,5 @@ export const getRoomList = async (): Promise<RoomItem[]> => {
     }
   );
 
-  return response.data.data;
+  return response.data;
 };
