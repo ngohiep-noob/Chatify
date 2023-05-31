@@ -7,9 +7,9 @@ export interface ContextValue {
   roomList?: MenuItem[];
   selectedItemId?: string;
   user?: {
-    id: string;
-    name: string;
-    email: string;
+    id: string ;
+    name: string ;
+    email: string ;
   };
 }
 

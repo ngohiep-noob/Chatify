@@ -10,3 +10,4 @@ export interface MenuItem {
   lastMessageTime: Date;
   lastChattingUsername: string;
 }
+

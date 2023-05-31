@@ -11,10 +11,8 @@ import styled from "styled-components";
 import React, { useEffect } from "react";
 import { AppContext } from "../../context/app.context";
 import { getRoomList, getUserInfor } from "../../apis/user.api";
-import { MenuItem } from "../../types/Home";
+import { MenuItem} from "../../types/Home";
 import {ContextValue} from "../../context/app.context"
-import axios from "axios";
-import { User } from "../../types/User";
 
 const { Sider } = Layout;
 const { Text } = Typography;
@@ -48,7 +46,7 @@ export default function SideBar() {
       (async () => {
         const roomList = await getRoomList();
         console.log("roomList: ", roomList);
-        const menuItemList: MenuItem[] = roomList.map((room) => ({
+        const menuItemList: MenuItem[] = roomList.data.map((room) => ({
           id: room.id,
           name: room.name,
           lastMessage: room.lastMessage.message,
@@ -62,11 +60,14 @@ export default function SideBar() {
         // fetch profile ở đây
         const profile = await getUserInfor();
         console.log(profile);
-        // const userr: ContextValue ={
-        //   id:profile.data.id,
-        // }
+         const userr:  ContextValue["user"]=
+         {
+          id:profile.data.id,
+          name:profile.data.fullName,
+          email: profile.data.email,
 
-        // if (action?.setUserInfo) action.setUserInfo(userr);
+         }
+        if (action?.setUserInfo) action.setUserInfo(userr);
 
       })();
     } catch (error) {

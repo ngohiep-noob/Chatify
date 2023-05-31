@@ -1,6 +1,6 @@
 import axios from "axios";
-import { RoomItem ,User} from "../types/User";
-
+import { RoomItem } from "../types/User";
+import { getToken } from "../utils/token.utils";
 type GetRoomResponse = {
   data: RoomItem[];
   message: string;
@@ -9,7 +9,7 @@ type GetRoomResponse = {
 
 export const getRoomList = async (): Promise<GetRoomResponse> => {
   // const token = localStorage.getItem("token");
-  const token = localStorage.getItem('token');
+  const token = getToken();
 
   const response = await axios.get<GetRoomResponse>(
     "http://localhost:8888/users/rooms",
@@ -22,15 +22,11 @@ export const getRoomList = async (): Promise<GetRoomResponse> => {
 
   return response.data;
 };
-type GetUserInfor= {
-  data: User;
-  message: string;
-  status: string;
-};
-export const getUserInfor = async(): Promise<GetUserInfor> => {
-  const token= localStorage.getItem('token');
-  const response = await axios.get<GetUserInfor>(
-    "http://localhost:8888/users/rooms",
+
+export const getUserInfor = async() => {
+  const token= getToken();
+  const response = await axios.get(
+    "http://localhost:8888/users/profile",
     {
       headers: {
         Authorization: `Bearer ${token}`,
