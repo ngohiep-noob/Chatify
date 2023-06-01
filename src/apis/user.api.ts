@@ -9,7 +9,6 @@ type GetRoomResponse = {
 };
 
 export const getRoomList = async (): Promise<GetRoomResponse> => {
-  // const token = localStorage.getItem("token");
   const token = getToken();
 
   const response = await axios.get<GetRoomResponse>(
