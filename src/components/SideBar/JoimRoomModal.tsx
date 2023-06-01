@@ -32,13 +32,13 @@ export const JoinRoomMadall = ({
   }, []);
 
   return (
-    <Modal title="Tạo phòng" open={open} onOk={onOk} onCancel={onCancel}>
+    <Modal title="Add members" open={open} onOk={onOk} onCancel={onCancel}>
       <Form form={form} layout="vertical">
-        <Form.Item label="Thành viên nhóm" name="members">
+        <Form.Item label="Members" name="members">
           <Select
             mode="multiple"
             allowClear
-            placeholder="Chọn thành viên"
+            placeholder="Choses members"
             options={options}
           />
         </Form.Item>
