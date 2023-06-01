@@ -43,7 +43,7 @@ export const JoinRoomModal = ({
           <Select
             mode="multiple"
             allowClear
-            placeholder="Choses members"
+            placeholder="chọn thành viên"
             options={options}
           />
         </Form.Item>

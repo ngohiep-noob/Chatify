@@ -193,7 +193,7 @@ export default function SideBar() {
           {
             key: "room",
             icon: <TeamOutlined />,
-            label: "Rooms",
+            label: "Phòng chat",
             children: value?.roomList
               ? value.roomList.map((item) => ({
                   key: item.id,

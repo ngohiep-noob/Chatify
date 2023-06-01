@@ -46,7 +46,9 @@ export default function ListItem({
   return (
     <DivStyled>
       <div>
-        <Avatar className="Avata">{nameSlipt[nameSlipt.length - 1][0]}</Avatar>
+        <Avatar className="Avata">
+          {nameSlipt[nameSlipt.length - 1][0].toUpperCase()}
+        </Avatar>
       </div>
       <div>
         <Typography.Text className="name" strong>
@@ -58,7 +60,7 @@ export default function ListItem({
               <b>{lastChattingUsername}:</b> <span>{lastMessage}</span>
             </>
           ) : (
-            <i>a new created room</i>
+            <i>phòng vừa được tạo</i>
           )}
         </Typography.Text>
         <Typography.Text className="Time" type="secondary">

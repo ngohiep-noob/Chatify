@@ -1,14 +1,31 @@
-import { Avatar, Button, Col, Empty, Input, Row, Typography, Form } from "antd";
-import { SendOutlined, UserAddOutlined } from "@ant-design/icons";
+import {
+  Avatar,
+  Button,
+  Col,
+  Empty,
+  Input,
+  Row,
+  Typography,
+  Form,
+  Space,
+} from "antd";
+import {
+  OrderedListOutlined,
+  SendOutlined,
+  UserAddOutlined,
+} from "@ant-design/icons";
 import { JoinRoomModal as JoinRoomModal } from "../../components/SideBar/JoinRoomModal";
 import { createRef, useContext, useEffect, useRef, useState } from "react";
 import { AppContext } from "../../context/app.context";
 import Message from "../../components/MainChat/Message";
 import { GetChatHistory } from "../../apis/chat.api";
-import { JoinRoomRequest, JoinRoomAdd } from "../../apis/room.api";
+import { JoinRoomRequest, JoinRoom, GetMemberList } from "../../apis/room.api";
 import axios from "axios";
 import SockJS from "sockjs-client";
 import { over } from "stompjs";
+import { SERVER_URL } from "../../apis/constant";
+import { User } from "../../types/User";
+import { MemberListModal } from "../../components/MainChat/MemberListModal";
 interface MessageProps {
   senderId: string;
   senderName: string;
@@ -19,6 +36,7 @@ interface ChatInfo {
   name: string;
   desc: string;
   memberCount: number;
+  ownerId?: string;
 }
 
 interface MessagePayload {
@@ -28,16 +46,19 @@ interface MessagePayload {
   message: string;
 }
 
-const sock = new SockJS("http://localhost:8888/ws");
+const sock = new SockJS(`${SERVER_URL}/ws`);
 const stompClient = over(sock);
 
 export default function ChatWindow() {
   const [joinRoomForm] = Form.useForm();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [openAddModal, setOpenAddModal] = useState(false);
+  const [openMemberListModal, setOpenMemberListModal] = useState(false);
+
   const [chatList, setChatList] = useState<MessageProps[]>([]);
   const [chatInfo, setChatInfo] = useState<ChatInfo>();
   const [message, setMessage] = useState<string>("");
   const [chatRoomId, setChatRoomId] = useState<string>("");
+  const [members, setMembers] = useState<User[]>([]);
   const { value, action } = useContext(AppContext);
   const chatDivRef = useRef<HTMLDivElement>(null);
 
@@ -60,18 +81,22 @@ export default function ChatWindow() {
 
       console.log("create room request: ", createJoinRequest);
 
-      await JoinRoomAdd(createJoinRequest);
+      await JoinRoom(createJoinRequest);
       action?.showMessage?.("success", "Add members successfully!");
-      setIsModalOpen(false);
+
+      const memberListRes = await GetMemberList(value?.selectedItemId || "");
+      setMembers(memberListRes.data);
+
+      setOpenAddModal(false);
     } catch (error) {
       action?.showMessage?.("error", "Cannot Add members ");
     }
-    setIsModalOpen(false);
+    setOpenAddModal(false);
   };
 
   const handleCancelModal = () => {
     axios.CancelToken.source().cancel();
-    setIsModalOpen(false);
+    setOpenAddModal(false);
   };
 
   useEffect(() => {
@@ -80,6 +105,8 @@ export default function ChatWindow() {
 
       (async () => {
         const chatHistory = await GetChatHistory(value?.selectedItemId || "");
+        const memberListRes = await GetMemberList(value?.selectedItemId || "");
+
         const { data } = chatHistory;
 
         console.log("Chat history: ", data);
@@ -95,10 +122,13 @@ export default function ChatWindow() {
 
         setChatList(msgs);
 
+        setMembers(memberListRes.data);
+
         setChatInfo({
           name: data.name,
           desc: data.desc,
           memberCount: data.memberCount,
+          ownerId: data.ownerId,
         });
       })();
     } catch (error) {
@@ -132,11 +162,6 @@ export default function ChatWindow() {
       console.log("Send message error: ", error);
     }
   };
-
-  useEffect(() => {
-    console.log("new chat");
-    console.log(chatDivRef.current);
-  }, [chatList]);
 
   const onReceiveMessage = (payload: any) => {
     const msg: MessagePayload = JSON.parse(payload.body);
@@ -198,17 +223,24 @@ export default function ChatWindow() {
               <Typography.Text style={{ fontSize: "15px" }}>
                 {`${chatInfo?.desc || ""} - ${
                   chatInfo?.memberCount || 0
-                } members`}
+                } thành viên`}
               </Typography.Text>
             </Col>
 
-            <Col span={3}>
-              <UserAddOutlined
-                onClick={() => setIsModalOpen(true)}
+            <Col span={2}>
+              <OrderedListOutlined
+                onClick={() => setOpenMemberListModal(true)}
                 style={{
-                  marginLeft: "100px",
                   fontSize: "24px",
-                  transition: "color 0.3s",
+                }}
+              />
+            </Col>
+
+            <Col span={2}>
+              <UserAddOutlined
+                onClick={() => setOpenAddModal(true)}
+                style={{
+                  fontSize: "24px",
                 }}
               />
             </Col>
@@ -218,7 +250,7 @@ export default function ChatWindow() {
             ref={chatDivRef}
             style={{
               overflow: "auto",
-              maxHeight: "80vh",
+              height: "80vh",
               padding: "10px",
               backgroundColor: "#FFF",
             }}
@@ -274,8 +306,15 @@ export default function ChatWindow() {
         </>
       )}
 
+      <MemberListModal
+        open={openMemberListModal}
+        members={members}
+        ownerId={chatInfo?.ownerId}
+        onClose={() => setOpenMemberListModal(false)}
+      />
+
       <JoinRoomModal
-        open={isModalOpen}
+        open={openAddModal}
         onOk={handleAddMember}
         onCancel={handleCancelModal}
         form={joinRoomForm}

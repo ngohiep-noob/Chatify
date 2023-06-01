@@ -31,6 +31,10 @@ export const CreateRoomModal = ({
     })();
   }, []);
 
+  useEffect(() => {
+    if (!open) form.resetFields();
+  }, [open]);
+
   return (
     <Modal title="Create Room" open={open} onOk={onOk} onCancel={onCancel}>
       <Form form={form} layout="vertical">

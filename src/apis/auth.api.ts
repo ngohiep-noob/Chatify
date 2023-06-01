@@ -1,5 +1,6 @@
 import axios from "axios";
 import { setToken } from "../utils/token.utils";
+import { SERVER_URL } from "./constant";
 
 export type UserCredentials = {
   username: string;
@@ -9,15 +10,11 @@ export type UserCredentials = {
 };
 
 export const LoginAPI = async (credentials: UserCredentials) => {
-  const response = await axios.post(
-    "http://localhost:8888/auth/login",
-    credentials,
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const response = await axios.post(`${SERVER_URL}/auth/login`, credentials, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
   const token = response.data.token;
   setToken(token);
@@ -25,7 +22,7 @@ export const LoginAPI = async (credentials: UserCredentials) => {
 
 export const RegisterAPI = async (credentials: UserCredentials) => {
   const response = await axios.post(
-    "http://localhost:8888/auth/register",
+    `${SERVER_URL}/auth/register`,
     credentials,
     {
       headers: {

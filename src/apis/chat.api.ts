@@ -1,6 +1,7 @@
 import axios from "axios";
 import { getToken } from "../utils/token.utils";
 import { RoomChat } from "../types/Chat";
+import { SERVER_URL } from "./constant";
 
 export type GetChatHistoryRes = {
   data: RoomChat;
@@ -11,11 +12,11 @@ export type GetChatHistoryRes = {
 export const GetChatHistory = async (id: string | undefined) => {
   // const token = localStorage.getItem("token");
   if (!id) return Promise.reject("id is undefined");
-  
+
   const token = getToken();
 
   const response = await axios.get<GetChatHistoryRes>(
-    `http://localhost:8888/room/chat-history/${id}`,
+    `${SERVER_URL}/room/chat-history/${id}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

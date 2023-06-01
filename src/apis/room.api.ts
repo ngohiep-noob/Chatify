@@ -1,6 +1,7 @@
 import axios from "axios";
 import { getToken } from "../utils/token.utils";
-import { RoomItem } from "../types/User";
+import { RoomItem, User } from "../types/User";
+import { SERVER_URL } from "./constant";
 
 export type GetRoomResponse = {
   data: RoomItem[];
@@ -14,17 +15,16 @@ export type CreateRoomRequest = {
   memberNames: string[];
 };
 
-export type JoinRoomRequest={
-  roomId: string| undefined;
-  usernames: string[]
-}
-
+export type JoinRoomRequest = {
+  roomId: string | undefined;
+  usernames: string[];
+};
 
 export const getRoomList = async (): Promise<GetRoomResponse> => {
   const token = getToken();
 
   const response = await axios.get<GetRoomResponse>(
-    "http://localhost:8888/users/rooms",
+    `${SERVER_URL}/users/rooms`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -38,7 +38,7 @@ export const getRoomList = async (): Promise<GetRoomResponse> => {
 export const CreateRoom = async (req: CreateRoomRequest) => {
   const token = getToken();
 
-  const response = await axios.post("http://localhost:8888/room", req, {
+  const response = await axios.post(`${SERVER_URL}/room`, req, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -47,14 +47,34 @@ export const CreateRoom = async (req: CreateRoomRequest) => {
   return response.data;
 };
 
-export const JoinRoomAdd=async (req: JoinRoomRequest) => {
+export const JoinRoom = async (req: JoinRoomRequest) => {
   const token = getToken();
 
-  const response = await axios.post("http://localhost:8888/room/add-users", req, {
+  const response = await axios.post(`${SERVER_URL}/room/add-users`, req, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
 
   return response.data;
-}
+};
+
+type GetMemberListResponse = {
+  data: User[];
+  message: string;
+};
+
+export const GetMemberList = async (id: string) => {
+  const token = getToken();
+
+  const response = await axios.get<GetMemberListResponse>(
+    `${SERVER_URL}/room/user-list/${id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+};
