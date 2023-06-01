@@ -47,3 +47,6 @@
     }
   }
 }
+.heart-icon:hover {
+  color: blue;
+}

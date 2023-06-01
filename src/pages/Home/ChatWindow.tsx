@@ -12,9 +12,10 @@ import {
   AntDesignOutlined,
   SendOutlined,
   UserOutlined,
+  UserAddOutlined
 } from "@ant-design/icons";
 
-import { useContext, useEffect } from "react";
+import { useContext, useEffect,useState } from "react";
 import { AppContext } from "../../context/app.context";
 import React from "react";
 import Message from "../../components/MainChat/Message";
@@ -27,6 +28,15 @@ interface MessageProps {
 }
 
 export default function ChatWindow() {
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
   const { value, action } = useContext(AppContext);
   const [chatList, setChatList] = React.useState<MessageProps[]>([]);
   const [chatName, setChatName] = React.useState<string>("");
@@ -96,23 +106,11 @@ export default function ChatWindow() {
             </Col>
 
             <Col span={3}>
-              <Avatar.Group
-                maxCount={2}
-                maxStyle={{ color: "#f56a00", backgroundColor: "#fde3cf" }}
-              >
-                <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel&key=3" />
-                <Avatar style={{ backgroundColor: "#f56a00" }}>K</Avatar>
-                <Tooltip title="Ant User" placement="top">
-                  <Avatar
-                    style={{ backgroundColor: "#87d068" }}
-                    icon={<UserOutlined />}
-                  />
-                </Tooltip>
-                <Avatar
-                  style={{ backgroundColor: "#1890ff" }}
-                  icon={<AntDesignOutlined />}
-                />
-              </Avatar.Group>
+            <UserAddOutlined 
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave} 
+            onClick={action?.HandleAddFriend}
+            style={{  marginLeft: '100px',color: isHovered ? 'blue' : 'black', fontSize: '24px', transition: 'color 0.3s' }}/>
             </Col>
           </Row>
 
