@@ -1,9 +1,15 @@
-import { LockOutlined, UserOutlined, MailOutlined,GithubFilled } from "@ant-design/icons";
+import {
+  LockOutlined,
+  UserOutlined,
+  MailOutlined,
+  GithubFilled,
+} from "@ant-design/icons";
 import { Button, Form, Input, Spin } from "antd";
 import styled from "styled-components";
 import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
+import { RegisterAPI, UserCredentials } from "../../apis/auth.api";
 
 const StyledForm = styled(Form)`
   background-color: while;
@@ -63,36 +69,27 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   const OnFinish = (values: any) => {
+    setLoading(true);
     const fetchData = async () => {
       try {
-        const response = await axios.post(
-          "http://localhost:8888/auth/register",
-          {
-            username: values.username,
-            password: values.password,
-            email: values.email,
-            fullname: values.fullname,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const token = response.data.token; 
-        localStorage.setItem('token', token);
-        console.log(response.data);
-        console.log(token);
+        const creds: UserCredentials = {
+          username: values.username,
+          password: values.password,
+          email: values.email,
+          fullname: values.fullname,
+        };
+
+        await RegisterAPI(creds);
+
         console.log("Register successful");
-        setTimeout(() => {
-          navigator("/");
-          setLoading(false);
-        }, 500);
-        // thành công
+
+        navigator("/home");
+        setLoading(false);
       } catch (error) {
         console.error(error);
       }
     };
+
     fetchData();
   };
 
@@ -137,7 +134,7 @@ const Login = () => {
             className="input"
           />
         </Form.Item>
-       
+
         <Form.Item
           name="fullname"
           rules={[
