@@ -207,7 +207,9 @@ export default function ChatWindow() {
               <Avatar
                 className="header_avatar"
                 size={50}
-                src="https://i.pinimg.com/originals/e1/ed/eb/e1edeb6d3f086b74b0f33be6e665c10f.jpg"
+                style={{ backgroundImage: 
+                  "url('https://img.freepik.com/free-photo/green-sofa-white-living-room-with-free-space_43614-834.jpg?w=2000')",
+                   backgroundSize: 'cover' }}
               ></Avatar>
             </Col>
 
@@ -223,7 +225,7 @@ export default function ChatWindow() {
               <Typography.Text style={{ fontSize: "15px" }}>
                 {`${chatInfo?.desc || ""} - ${
                   chatInfo?.memberCount || 0
-                } thành viên`}
+                } Members`}
               </Typography.Text>
             </Col>
 

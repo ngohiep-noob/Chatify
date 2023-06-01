@@ -31,7 +31,11 @@ import {
   getRoomList,
 } from "../../apis/room.api";
 import axios from "axios";
-
+const spanStyles = {
+  color: '#fff', // Example text color
+  fontSize: '25px', // Example font size
+  fontWeight: 'bold',
+};
 const { Sider } = Layout;
 const { Text } = Typography;
 
@@ -141,8 +145,12 @@ export default function SideBar() {
         <Col span={6} className="avatar-col">
           <Avatar
             size={55}
-            src="https://i.pinimg.com/originals/e1/ed/eb/e1edeb6d3f086b74b0f33be6e665c10f.jpg"
-          ></Avatar>
+            style={{ backgroundImage: 
+              "url('https://wallpaperaccess.com/full/270177.jpg')",
+               backgroundSize: 'cover' }}
+          >
+            <span style={spanStyles}>{(value?.user?.name[0])?.toUpperCase()}</span>
+          </Avatar>
         </Col>
         <Col span={18} className="details-col">
           <Text strong className="name">
@@ -193,7 +201,7 @@ export default function SideBar() {
           {
             key: "room",
             icon: <TeamOutlined />,
-            label: "Phòng chat",
+            label: "Chat rooms",
             children: value?.roomList
               ? value.roomList.map((item) => ({
                   key: item.id,

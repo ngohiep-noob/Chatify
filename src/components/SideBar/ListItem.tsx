@@ -46,8 +46,10 @@ export default function ListItem({
   return (
     <DivStyled>
       <div>
-        <Avatar className="Avata">
-          {nameSlipt[nameSlipt.length - 1][0].toUpperCase()}
+        <Avatar style={{ backgroundImage: 
+                  "url('https://img.freepik.com/free-photo/green-sofa-white-living-room-with-free-space_43614-834.jpg?w=2000')",
+                   backgroundSize: 'cover' }} className="Avata">
+         { /* {nameSlipt[nameSlipt.length - 1][0].toUpperCase()}*/ }
         </Avatar>
       </div>
       <div>
