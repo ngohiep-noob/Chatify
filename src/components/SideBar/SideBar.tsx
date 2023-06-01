@@ -19,11 +19,18 @@ import {
   UsergroupAddOutlined,
 } from "@ant-design/icons";
 import styled from "styled-components";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { AppContext } from "../../context/app.context";
-import { getRoomList, getUserInfor } from "../../apis/user.api";
+import { getUserInfor } from "../../apis/user.api";
 import { MenuItem } from "../../types/Home";
 import { ContextValue } from "../../context/app.context";
+import { CreateRoomModal } from "./CreateRoomModal";
+import {
+  CreateRoomRequest,
+  CreateRoom,
+  getRoomList,
+} from "../../apis/room.api";
+import axios from "axios";
 
 const { Sider } = Layout;
 const { Text } = Typography;
@@ -52,32 +59,49 @@ const StyledRow = styled(Row)`
 export default function SideBar() {
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-  const handleOk = () => {
-    console.log(form.getFieldsValue());
-    form.resetFields();
-    setIsModalOpen(false);
+  const [loading, setLoading] = useState(false);
+  const { value, action } = React.useContext(AppContext);
+  const handleFetchData = useRef<any>();
+
+  const handleOk = async () => {
+    setLoading(true);
+    try {
+      const createRoomReq: CreateRoomRequest = {
+        name: form.getFieldValue("name"),
+        desc: form.getFieldValue("description"),
+        memberNames: form.getFieldValue("members"),
+      };
+
+      console.log("create room request: ", createRoomReq);
+
+      await CreateRoom(createRoomReq);
+      action?.showMessage?.("success", "Create room successfully!");
+      setIsModalOpen(false);
+      setLoading(false);
+    } catch (error) {
+      action?.showMessage?.("error", "Cannot create room!");
+      setLoading(false);
+    }
+
+    await handleFetchData.current();
   };
 
   const handleCancel = () => {
+    axios.CancelToken.source().cancel();
     setIsModalOpen(false);
   };
 
-  const { value, action } = React.useContext(AppContext);
-
   useEffect(() => {
     try {
-      (async () => {
+      handleFetchData.current = async () => {
         const roomList = await getRoomList();
 
         const menuItemList: MenuItem[] = roomList.data.map((room) => ({
           id: room.id,
           name: room.name,
-          lastMessage: room.lastMessage.message,
-          lastMessageTime: room.lastMessage.createdAt,
-          lastChattingUsername: room.lastMessage.user?.username || "",
+          lastMessage: room.lastMessage?.message || "",
+          lastMessageTime: room.lastMessage?.createdAt || "",
+          lastChattingUsername: room.lastMessage?.user?.username || "",
         }));
 
         action?.setRoomList?.(menuItemList);
@@ -91,7 +115,9 @@ export default function SideBar() {
         };
 
         action?.setUserInfo?.(userInfo);
-      })();
+      };
+
+      handleFetchData.current();
     } catch (error) {
       action?.showMessage?.("error", "Cannot fetch user info!");
     }
@@ -109,22 +135,6 @@ export default function SideBar() {
       width={"25vw"}
       theme="light"
     >
-      <Modal
-        title="Tạo phòng"
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        <Form form={form} layout="vertical">
-          <Form.Item label="Tên phòng" name="name">
-            <Input placeholder="Nhập tên phòng" />
-          </Form.Item>
-          <Form.Item label="Mô tả" name="description">
-            <Input.TextArea placeholder="Nhập mô tả" />
-          </Form.Item>
-        </Form>
-      </Modal>
-
       <Logo />
       <hr style={{ width: "55%", marginBottom: "10px" }}></hr>
       <StyledRow justify="center" align="middle">
@@ -160,17 +170,17 @@ export default function SideBar() {
         justify="space-evenly"
       >
         <Col span={5}>
-          <Button type="primary" onClick={action?.HandleAddFriend}>
-            <UserAddOutlined />
-          </Button>
-        </Col>
-        <Col span={5}>
-          <Button type="primary" onClick={showModal}>
+          <Button type="primary" onClick={() => setIsModalOpen(true)}>
             <UsergroupAddOutlined />
           </Button>
         </Col>
         <Col span={5}>
-          <Button danger type="primary" onClick={action?.HandleLogout}>
+          <Button
+            danger
+            type="primary"
+            onClick={action?.HandleLogout}
+            loading={loading}
+          >
             <LogoutOutlined />
           </Button>
         </Col>
@@ -196,6 +206,12 @@ export default function SideBar() {
           const { key } = item;
           if (action?.setSelectedItem) action?.setSelectedItem(key as string);
         }}
+      />
+      <CreateRoomModal
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        form={form}
       />
     </Sider>
   );

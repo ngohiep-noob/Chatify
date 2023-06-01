@@ -26,28 +26,39 @@ interface MessageProps {
   message: string;
 }
 
+interface ChatInfo {
+  name: string;
+  desc: string;
+  memberCount: number;
+}
+
 export default function ChatWindow() {
   const { value, action } = useContext(AppContext);
   const [chatList, setChatList] = React.useState<MessageProps[]>([]);
-  const [chatName, setChatName] = React.useState<string>("");
+  const [chatInfo, setChatInfo] = React.useState<ChatInfo>();
 
   useEffect(() => {
     try {
+      if (!value?.selectedItemId) return;
       (async () => {
         const chatHistory = await GetChatHistory(value?.selectedItemId || "");
         const { data } = chatHistory;
 
         console.log("Chat history: ", data);
 
-        if (chatHistory) {
-          setChatName(data.name);
-          const msgs: MessageProps[] = data.chats.map((item) => ({
-            senderId: item.user.id || "",
-            senderName: item.user.username || "",
-            message: item.message,
-          }));
-          setChatList(msgs);
-        }
+        const msgs: MessageProps[] = data.chats.map((item) => ({
+          senderId: item.user.id || "",
+          senderName: item.user.username || "",
+          message: item.message,
+        }));
+
+        setChatList(msgs);
+
+        setChatInfo({
+          name: data.name,
+          desc: data.desc,
+          memberCount: data.memberCount,
+        });
       })();
     } catch (error) {
       console.log("Get chat history error: ", error);
@@ -90,9 +101,19 @@ export default function ChatWindow() {
             </Col>
 
             <Col span={18}>
-              <Typography.Text className="header_name" strong>
-                {chatName || "Chat name"}
+              <Typography.Text
+                className="header_name"
+                strong
+                style={{ fontSize: "20px" }}
+              >
+                {chatInfo?.name}
               </Typography.Text>{" "}
+              <br />
+              <Typography.Text style={{ fontSize: "15px" }}>
+                {`${chatInfo?.desc || ""} - ${
+                  chatInfo?.memberCount || 0
+                } members`}
+              </Typography.Text>
             </Col>
 
             <Col span={3}>

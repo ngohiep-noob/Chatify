@@ -13,4 +13,5 @@ export type RoomChat = {
   ownerId: string;
   createdAt: Date;
   chats: Message[];
+  memberCount: number;
 };

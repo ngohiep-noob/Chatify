@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { MenuItem } from "../types/Home";
 import { useNavigate } from "react-router-dom";
 import { message } from "antd";
+import { setToken } from "../utils/token.utils";
 export interface ContextValue {
   friendList?: MenuItem[];
   roomList?: MenuItem[];
@@ -100,7 +101,7 @@ const AppProvider = ({ children }: AppProvider) => {
   const SetContext: ContextAction = useMemo(
     () => ({
       HandleLogout: () => {
-        localStorage.removeItem("token");
+        setToken("");
         navigator("/");
       },
       HandleAddFriend: () => {

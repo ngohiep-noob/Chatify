@@ -52,9 +52,17 @@ export default function ListItem({
         <Typography.Text className="name" strong>
           {name}
         </Typography.Text>
-        <Typography.Text className="last-msg">{`${lastChattingUsername}: ${lastMessage}`}</Typography.Text>
+        <Typography.Text className="last-msg">
+          {lastMessage ? (
+            <>
+              <b>{lastChattingUsername}:</b> <span>{lastMessage}</span>
+            </>
+          ) : (
+            <i>a new created room</i>
+          )}
+        </Typography.Text>
         <Typography.Text className="Time" type="secondary">
-          {dayjs(lastMessageTime).format("HH:mm A")}
+          {lastMessageTime ? dayjs(lastMessageTime).format("HH:mm A") : ""}
         </Typography.Text>
       </div>
     </DivStyled>

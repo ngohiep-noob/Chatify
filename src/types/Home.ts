@@ -6,8 +6,7 @@ export enum MenuItemType {
 export interface MenuItem {
   id: string;
   name: string;
-  lastMessage: string;
-  lastMessageTime: Date;
-  lastChattingUsername: string;
+  lastMessage?: string;
+  lastMessageTime?: Date;
+  lastChattingUsername?: string;
 }
-
