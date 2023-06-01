@@ -1,6 +1,7 @@
 import { Avatar, Typography } from "antd";
 import styled from "styled-components";
 import { MenuItem } from "../../types/Home";
+import dayjs from "dayjs";
 
 const DivStyled = styled.div`
   .name {
@@ -53,7 +54,7 @@ export default function ListItem({
         </Typography.Text>
         <Typography.Text className="last-msg">{`${lastChattingUsername}: ${lastMessage}`}</Typography.Text>
         <Typography.Text className="Time" type="secondary">
-          {lastMessageTime}
+          {dayjs(lastMessageTime).format("HH:mm A")}
         </Typography.Text>
       </div>
     </DivStyled>

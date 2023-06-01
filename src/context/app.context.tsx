@@ -1,16 +1,15 @@
 import React, { useMemo } from "react";
 import { MenuItem } from "../types/Home";
 import { useNavigate } from "react-router-dom";
-import  { useState } from 'react';
-import {Modal} from "antd";
+import { message } from "antd";
 export interface ContextValue {
   friendList?: MenuItem[];
   roomList?: MenuItem[];
   selectedItemId?: string;
   user?: {
-    id: string ;
-    name: string ;
-    email: string ;
+    id: string;
+    name: string;
+    email: string;
   };
 }
 
@@ -22,6 +21,10 @@ export interface ContextAction {
   setRoomList?: (newGroupList: MenuItem[]) => void;
   setUserInfo?: (newUserInfo: ContextValue["user"]) => void;
   setSelectedItem?: (newSelectedItem: string) => void;
+  showMessage?: (
+    type: "success" | "error" | "warning",
+    content: string
+  ) => void;
 }
 
 export interface ContextProps {
@@ -36,6 +39,7 @@ interface AppProvider {
 
 const AppProvider = ({ children }: AppProvider) => {
   const navigator = useNavigate();
+  const [messageApi, contextHolder] = message.useMessage();
 
   const [state, setState] = React.useState<ContextValue>({
     friendList: [],
@@ -76,34 +80,47 @@ const AppProvider = ({ children }: AppProvider) => {
     }));
   };
 
+  const showMessage = (
+    type: "success" | "error" | "warning",
+    content: string
+  ) => {
+    switch (type) {
+      case "success":
+        messageApi.success(content);
+        break;
+      case "error":
+        messageApi.error(content);
+        break;
+      case "warning":
+        messageApi.warning(content);
+        break;
+    }
+  };
+
   const SetContext: ContextAction = useMemo(
-    () => (
-      {
-      
+    () => ({
       HandleLogout: () => {
         localStorage.removeItem("token");
         navigator("/");
       },
       HandleAddFriend: () => {
-      
         console.log("HandleAddFriend");
-        
       },
       HandleAddGroup: () => {
-        
         console.log("HandleAddGroup");
-        
       },
       setFriendList,
       setRoomList,
       setUserInfo,
       setSelectedItem,
+      showMessage,
     }),
     []
   );
 
   return (
     <AppContext.Provider value={{ value: state, action: SetContext }}>
+      {contextHolder}
       {children}
     </AppContext.Provider>
   );

@@ -5,7 +5,10 @@ import NotFound from "./pages/NotFound";
 import SignUp from "./pages/Auth/SignUp";
 import AppProvider from "./context/app.context";
 import AuthLayout from "./pages/Auth/Layout";
+
 function App() {
+  
+
   const routes = useRoutes([
     {
       path: "/",
@@ -35,7 +38,10 @@ function App() {
 
   return (
     <>
-      <AppProvider>{routes}</AppProvider>
+      <AppProvider>
+        
+        {routes}
+      </AppProvider>
     </>
   );
 }

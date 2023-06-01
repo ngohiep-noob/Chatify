@@ -1,4 +1,14 @@
-import { Avatar, Button, Col, Layout, Menu, Row, Typography,Modal,Input } from "antd";
+import {
+  Avatar,
+  Button,
+  Col,
+  Layout,
+  Menu,
+  Row,
+  Typography,
+  Modal,
+  Input,
+} from "antd";
 import Logo from "./Logo";
 import ListItem from "./ListItem";
 import {
@@ -8,11 +18,11 @@ import {
   UsergroupAddOutlined,
 } from "@ant-design/icons";
 import styled from "styled-components";
-import React, { useEffect,useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AppContext } from "../../context/app.context";
 import { getRoomList, getUserInfor } from "../../apis/user.api";
-import { MenuItem} from "../../types/Home";
-import {ContextValue} from "../../context/app.context"
+import { MenuItem } from "../../types/Home";
+import { ContextValue } from "../../context/app.context";
 
 const { Sider } = Layout;
 const { Text } = Typography;
@@ -39,12 +49,12 @@ const StyledRow = styled(Row)`
 `;
 
 export default function SideBar() {
-  const [inputValue1, setInputValue1] = useState('');
-  const [inputValue2, setInputValue2] = useState('');
-  const handleInputChange1 = (e:React.ChangeEvent<HTMLInputElement>) => {
+  const [inputValue1, setInputValue1] = useState("");
+  const [inputValue2, setInputValue2] = useState("");
+  const handleInputChange1 = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue1(e.target.value);
   };
-  const handleInputChange2 = (e:React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange2 = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue2(e.target.value);
   };
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -52,21 +62,22 @@ export default function SideBar() {
     setIsModalOpen(true);
   };
   const handleOk = () => {
-    console.log('Input value:', inputValue1);
-    console.log('Input value:', inputValue2);
+    console.log("Input value:", inputValue1);
+    console.log("Input value:", inputValue2);
     setIsModalOpen(false);
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+
   const { value, action } = React.useContext(AppContext);
 
   useEffect(() => {
     try {
       (async () => {
         const roomList = await getRoomList();
-        console.log("roomList: ", roomList);
+
         const menuItemList: MenuItem[] = roomList.data.map((room) => ({
           id: room.id,
           name: room.name,
@@ -75,29 +86,24 @@ export default function SideBar() {
           lastChattingUsername: room.lastMessage.user?.username || "",
         }));
 
-        if (action?.setRoomList) action.setRoomList(menuItemList);
+        action?.setRoomList?.(menuItemList);
 
-
-        // fetch profile ở đây
         const profile = await getUserInfor();
-        console.log(profile);
-         const userr:  ContextValue["user"]=
-         {
-          id:profile.data.id,
-          name:profile.data.fullName,
+
+        const userInfo: ContextValue["user"] = {
+          id: profile.data.id,
+          name: profile.data.fullName,
           email: profile.data.email,
+        };
 
-         }
-        if (action?.setUserInfo) action.setUserInfo(userr);
-
+        action?.setUserInfo?.(userInfo);
       })();
     } catch (error) {
-      console.log("Side bar error: ", error);
+      action?.showMessage?.("error", "Cannot fetch user info!");
     }
   }, []);
 
   return (
-    
     <Sider
       style={{
         overflow: "auto",
@@ -109,10 +115,26 @@ export default function SideBar() {
       width={"25vw"}
       theme="light"
     >
-      <Modal title="Create room" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-      <Input value={inputValue1} onChange={handleInputChange1} placeholder="Room's name"style={{ marginTop: '15px' }} />
-      <Input value={inputValue2} onChange={handleInputChange2} placeholder="Fullname"style={{ marginTop: '15px' }} />
+      <Modal
+        title="Create room"
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <Input
+          value={inputValue1}
+          onChange={handleInputChange1}
+          placeholder="Room's name"
+          style={{ marginTop: "15px" }}
+        />
+        <Input
+          value={inputValue2}
+          onChange={handleInputChange2}
+          placeholder="Fullname"
+          style={{ marginTop: "15px" }}
+        />
       </Modal>
+
       <Logo />
       <hr style={{ width: "55%", marginBottom: "10px" }}></hr>
       <StyledRow justify="center" align="middle">
