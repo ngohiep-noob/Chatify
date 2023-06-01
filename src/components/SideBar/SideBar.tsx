@@ -1,4 +1,4 @@
-import { Avatar, Button, Col, Layout, Menu, Row, Typography } from "antd";
+import { Avatar, Button, Col, Layout, Menu, Row, Typography,Modal,Input } from "antd";
 import Logo from "./Logo";
 import ListItem from "./ListItem";
 import {
@@ -8,7 +8,7 @@ import {
   UsergroupAddOutlined,
 } from "@ant-design/icons";
 import styled from "styled-components";
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 import { AppContext } from "../../context/app.context";
 import { getRoomList, getUserInfor } from "../../apis/user.api";
 import { MenuItem} from "../../types/Home";
@@ -39,6 +39,27 @@ const StyledRow = styled(Row)`
 `;
 
 export default function SideBar() {
+  const [inputValue1, setInputValue1] = useState('');
+  const [inputValue2, setInputValue2] = useState('');
+  const handleInputChange1 = (e:React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue1(e.target.value);
+  };
+  const handleInputChange2 = (e:React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue2(e.target.value);
+  };
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleOk = () => {
+    console.log('Input value:', inputValue1);
+    console.log('Input value:', inputValue2);
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
   const { value, action } = React.useContext(AppContext);
 
   useEffect(() => {
@@ -76,6 +97,7 @@ export default function SideBar() {
   }, []);
 
   return (
+    
     <Sider
       style={{
         overflow: "auto",
@@ -87,6 +109,10 @@ export default function SideBar() {
       width={"25vw"}
       theme="light"
     >
+      <Modal title="Create room" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+      <Input value={inputValue1} onChange={handleInputChange1} placeholder="Room's name"style={{ marginTop: '15px' }} />
+      <Input value={inputValue2} onChange={handleInputChange2} placeholder="Fullname"style={{ marginTop: '15px' }} />
+      </Modal>
       <Logo />
       <hr style={{ width: "55%", marginBottom: "10px" }}></hr>
       <StyledRow justify="center" align="middle">
@@ -127,7 +153,7 @@ export default function SideBar() {
           </Button>
         </Col>
         <Col span={5}>
-          <Button type="primary" onClick={action?.HandleAddGroup}>
+          <Button type="primary" onClick={showModal}>
             <UsergroupAddOutlined />
           </Button>
         </Col>
