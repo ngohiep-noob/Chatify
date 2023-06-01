@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
+import { LoginAPI, UserCredentials } from "../../apis/auth.api";
 
 const StyledForm = styled(Form)`
   background-color: while;
@@ -64,32 +65,20 @@ const Login = () => {
   const [token, setToken] = useState("");
 
   const OnFinish = (values: any) => {
-    console.log(values);
+    setLoading(true);
 
     const fetchData = async () => {
       try {
-        const response = await axios.post(
-          "http://localhost:8888/auth/login",
-          {
-            username: values.username,
-            password: values.password,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const token = response.data.token; 
-        localStorage.setItem('token', token);
-        console.log(response.data);
-        console.log(token);
+        const credentials: UserCredentials = {
+          username: values.username,
+          password: values.password,
+        };
+        await LoginAPI(credentials);
+
         console.log("Login successful");
-        setTimeout(() => {
-          navigator("/home");
-          setLoading(false);
-        }, 500);
-        // thành công
+
+        navigator("/home");
+        setLoading(false);
       } catch (error) {
         console.error(error);
       }
