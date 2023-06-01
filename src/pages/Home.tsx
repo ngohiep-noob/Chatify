@@ -35,9 +35,6 @@ const Home = () => {
           <Col span={24}>
             <ChatWindow />
           </Col>
-          {/* <Col span={6}>
-            <Infor />
-          </Col> */}
         </Row>
       </HomeContext.Provider>
     </Layout>

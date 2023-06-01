@@ -26,6 +26,7 @@ export interface ContextAction {
     type: "success" | "error" | "warning",
     content: string
   ) => void;
+  clearStore?: () => void;
 }
 
 export interface ContextProps {
@@ -38,20 +39,22 @@ interface AppProvider {
   children: React.ReactNode;
 }
 
+const defaultContextValue: ContextValue = {
+  friendList: [],
+  roomList: [],
+  selectedItemId: "",
+  user: {
+    id: "",
+    name: "",
+    email: "",
+  },
+};
+
 const AppProvider = ({ children }: AppProvider) => {
   const navigator = useNavigate();
   const [messageApi, contextHolder] = message.useMessage();
 
-  const [state, setState] = React.useState<ContextValue>({
-    friendList: [],
-    roomList: [],
-    selectedItemId: "",
-    user: {
-      id: "1",
-      name: "Ngo Hiep",
-      email: "ngohiep@deptrai.vcl",
-    },
-  });
+  const [state, setState] = React.useState<ContextValue>(defaultContextValue);
 
   const setFriendList = (newUserList: MenuItem[]) => {
     setState((prevState) => ({
@@ -98,10 +101,15 @@ const AppProvider = ({ children }: AppProvider) => {
     }
   };
 
+  const clearStore = () => {
+    setState(defaultContextValue);
+  };
+
   const SetContext: ContextAction = useMemo(
     () => ({
       HandleLogout: () => {
         setToken("");
+        clearStore();
         navigator("/");
       },
       HandleAddFriend: () => {
@@ -115,6 +123,7 @@ const AppProvider = ({ children }: AppProvider) => {
       setUserInfo,
       setSelectedItem,
       showMessage,
+      clearStore,
     }),
     []
   );

@@ -1,30 +1,14 @@
-import {
-  Avatar,
-  Button,
-  Col,
-  Empty,
-  Input,
-  Row,
-  Tooltip,
-  Typography,
-  Form
-} from "antd";
-import {
-  AntDesignOutlined,
-  SendOutlined,
-  UserOutlined,
-  UserAddOutlined
-} from "@ant-design/icons";
-import { JoinRoomMadall } from "../../components/SideBar/JoimRoomModal";
-import { useContext, useEffect,useState } from "react";
+import { Avatar, Button, Col, Empty, Input, Row, Typography, Form } from "antd";
+import { SendOutlined, UserAddOutlined } from "@ant-design/icons";
+import { JoinRoomModal as JoinRoomModal } from "../../components/SideBar/JoinRoomModal";
+import { createRef, useContext, useEffect, useRef, useState } from "react";
 import { AppContext } from "../../context/app.context";
-import React from "react";
 import Message from "../../components/MainChat/Message";
 import { GetChatHistory } from "../../apis/chat.api";
-import {
-  JoinRoomRequest,
-  JoinRoomAdd
-} from "../../apis/room.api";
+import { JoinRoomRequest, JoinRoomAdd } from "../../apis/room.api";
+import axios from "axios";
+import SockJS from "sockjs-client";
+import { over } from "stompjs";
 interface MessageProps {
   senderId: string;
   senderName: string;
@@ -36,19 +20,42 @@ interface ChatInfo {
   desc: string;
   memberCount: number;
 }
-import axios from "axios";
+
+interface MessagePayload {
+  senderId: string;
+  senderName?: string;
+  receiverId: string;
+  message: string;
+}
+
+const sock = new SockJS("http://localhost:8888/ws");
+const stompClient = over(sock);
+
 export default function ChatWindow() {
-  const { value, action } = useContext(AppContext);
-  const [form] = Form.useForm();
-  const [isHovered, setIsHovered] = useState(false);
+  const [joinRoomForm] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const handleOk = async () => {
-    setLoading(true);
+  const [chatList, setChatList] = useState<MessageProps[]>([]);
+  const [chatInfo, setChatInfo] = useState<ChatInfo>();
+  const [message, setMessage] = useState<string>("");
+  const [chatRoomId, setChatRoomId] = useState<string>("");
+  const { value, action } = useContext(AppContext);
+  const chatDivRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    stompClient.connect(
+      {},
+      () => {
+        console.log("websocket connected!");
+      },
+      (error: any) => console.log("connect websocket error: ", error)
+    );
+  }, []);
+
+  const handleAddMember = async () => {
     try {
       const createJoinRequest: JoinRoomRequest = {
-        roomId:value?.selectedItemId,
-        usernames: form.getFieldValue("members"),
+        roomId: value?.selectedItemId,
+        usernames: joinRoomForm.getFieldValue("members"),
       };
 
       console.log("create room request: ", createJoinRequest);
@@ -56,33 +63,21 @@ export default function ChatWindow() {
       await JoinRoomAdd(createJoinRequest);
       action?.showMessage?.("success", "Add members successfully!");
       setIsModalOpen(false);
-      setLoading(false);
     } catch (error) {
       action?.showMessage?.("error", "Cannot Add members ");
-      setLoading(false);
     }
-
     setIsModalOpen(false);
-
   };
-  const handleCancel = () => {
+
+  const handleCancelModal = () => {
     axios.CancelToken.source().cancel();
     setIsModalOpen(false);
   };
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-  };
- 
-  const [chatList, setChatList] = React.useState<MessageProps[]>([]);
-  const [chatInfo, setChatInfo] = React.useState<ChatInfo>();
 
   useEffect(() => {
     try {
       if (!value?.selectedItemId) return;
+
       (async () => {
         const chatHistory = await GetChatHistory(value?.selectedItemId || "");
         const { data } = chatHistory;
@@ -94,6 +89,9 @@ export default function ChatWindow() {
           senderName: item.user.username || "",
           message: item.message,
         }));
+
+        stompClient.unsubscribe(`/chatroom/${chatRoomId}`);
+        setChatRoomId(data.id);
 
         setChatList(msgs);
 
@@ -107,6 +105,51 @@ export default function ChatWindow() {
       console.log("Get chat history error: ", error);
     }
   }, [value?.selectedItemId]);
+
+  useEffect(() => {
+    if (!chatRoomId) return;
+    stompClient.subscribe(`/chatroom/${chatRoomId}`, onReceiveMessage);
+    console.log("subscribe to chatroom: ", `/chatroom/${chatRoomId}`);
+  }, [chatRoomId]);
+
+  const handleSendMessage = () => {
+    if (!message) return;
+    try {
+      const sendMessageRequest: MessagePayload = {
+        senderId: value?.user?.id || "",
+        receiverId: value?.selectedItemId || "",
+        message: message,
+      };
+
+      setMessage("");
+
+      stompClient.send(
+        "/app/group-chat",
+        {},
+        JSON.stringify(sendMessageRequest)
+      );
+    } catch (error) {
+      console.log("Send message error: ", error);
+    }
+  };
+
+  useEffect(() => {
+    console.log("new chat");
+    console.log(chatDivRef.current);
+  }, [chatList]);
+
+  const onReceiveMessage = (payload: any) => {
+    const msg: MessagePayload = JSON.parse(payload.body);
+
+    setChatList((prev) => [
+      ...prev,
+      {
+        senderId: msg.senderId,
+        senderName: msg.senderName || "username",
+        message: msg.message,
+      },
+    ]);
+  };
 
   return (
     <div
@@ -160,18 +203,22 @@ export default function ChatWindow() {
             </Col>
 
             <Col span={3}>
-            <UserAddOutlined 
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave} 
-            onClick={() => setIsModalOpen(true)}
-            style={{  marginLeft: '100px',color: isHovered ? 'blue' : 'black', fontSize: '24px', transition: 'color 0.3s' }}/>
+              <UserAddOutlined
+                onClick={() => setIsModalOpen(true)}
+                style={{
+                  marginLeft: "100px",
+                  fontSize: "24px",
+                  transition: "color 0.3s",
+                }}
+              />
             </Col>
           </Row>
 
           <div
+            ref={chatDivRef}
             style={{
               overflow: "auto",
-              height: "80vh",
+              maxHeight: "80vh",
               padding: "10px",
               backgroundColor: "#FFF",
             }}
@@ -184,7 +231,7 @@ export default function ChatWindow() {
                     "https://i.pinimg.com/originals/e1/ed/eb/e1edeb6d3f086b74b0f33be6e665c10f.jpg"
                   }
                   displayName={item.senderName}
-                  isOwner={item.senderId === value.user?.id}
+                  isOwner={String(item.senderId) === String(value.user?.id)}
                   key={index}
                 ></Message>
               );
@@ -197,7 +244,14 @@ export default function ChatWindow() {
             style={{ padding: "10px", height: "10vh" }}
           >
             <Col span={21}>
-              <Input placeholder=" Type a message" />
+              <Input
+                placeholder="Type a message"
+                onChange={(event) => {
+                  setMessage(event.target.value);
+                }}
+                onPressEnter={handleSendMessage}
+                value={message}
+              />
             </Col>
             <Col
               span={3}
@@ -207,7 +261,11 @@ export default function ChatWindow() {
                 alignItems: "center",
               }}
             >
-              <Button className="button" type="primary">
+              <Button
+                className="button"
+                type="primary"
+                onClick={handleSendMessage}
+              >
                 Send
                 <SendOutlined />
               </Button>
@@ -215,13 +273,13 @@ export default function ChatWindow() {
           </Row>
         </>
       )}
-      <JoinRoomMadall
+
+      <JoinRoomModal
         open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        form={form}
+        onOk={handleAddMember}
+        onCancel={handleCancelModal}
+        form={joinRoomForm}
       />
     </div>
-    
   );
 }

@@ -1,21 +1,20 @@
-import { Form, FormInstance, Input, Modal, Select, SelectProps } from "antd";
+import { Form, FormInstance, Modal, Select, SelectProps } from "antd";
 import { useEffect, useState } from "react";
-import { User } from "../../types/User";
 import { GetAllUsers } from "../../apis/user.api";
 
-export interface JoinRoomMadalProps {
+export interface JoinRoomModalProps {
   open: boolean;
   onOk: () => void;
   onCancel: () => void;
   form: FormInstance;
 }
 
-export const JoinRoomMadall = ({
+export const JoinRoomModal = ({
   open,
   onOk,
   onCancel,
   form,
-}: JoinRoomMadalProps) => {
+}: JoinRoomModalProps) => {
   const [options, setOptions] = useState<SelectProps["options"]>([]);
 
   useEffect(() => {
@@ -31,10 +30,16 @@ export const JoinRoomMadall = ({
     })();
   }, []);
 
+  useEffect(() => {
+    if (open !== true) {
+      form.resetFields();
+    }
+  }, [open]);
+
   return (
-    <Modal title="Tạo phòng" open={open} onOk={onOk} onCancel={onCancel}>
+    <Modal title="Thêm thành viên" open={open} onOk={onOk} onCancel={onCancel}>
       <Form form={form} layout="vertical">
-        <Form.Item label="Thành viên nhóm" name="members">
+        <Form.Item label="Thành viên mới" name="members">
           <Select
             mode="multiple"
             allowClear
