@@ -36,15 +36,15 @@ export const CreateRoomModal = ({
   }, [open]);
 
   return (
-    <Modal title="Create Room" open={open} onOk={onOk} onCancel={onCancel}>
+    <Modal title="Tạo phòng mới" open={open} onOk={onOk} onCancel={onCancel}>
       <Form form={form} layout="vertical">
-        <Form.Item label="Room's name" name="name">
+        <Form.Item label="Tên phòng" name="name">
           <Input placeholder="Input name" allowClear />
         </Form.Item>
-        <Form.Item label="Description" name="description">
+        <Form.Item label="Mô tả" name="description">
           <Input.TextArea placeholder="Input description" allowClear />
         </Form.Item>
-        <Form.Item label="Members" name="members">
+        <Form.Item label="Các thành viên ban đầu" name="members">
           <Select
             mode="multiple"
             allowClear

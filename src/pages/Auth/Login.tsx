@@ -10,7 +10,7 @@ import { AppContext } from "../../context/app.context";
 const StyledForm = styled(Form)`
   background-color: while;
   width: 440px;
-  height: 500px;
+  height: 450px;
   padding: 20px;
   border-radius: 20px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
@@ -75,83 +75,69 @@ const Login = () => {
         await LoginAPI(credentials);
 
         if (action?.showMessage)
-          action.showMessage("success", "Login successfully!");
+          action.showMessage("success", "Đăng nhập thành công!");
 
         navigator("/home");
         setLoading(false);
       } catch (error) {
         setLoading(false);
         if (action?.showMessage)
-          action.showMessage(
-            "error",
-            "Wrong password or username. Please try again later."
-          );
+          action.showMessage("error", "Sai tên tài khoản hoặc mật khẩu!");
       }
     };
     fetchData();
   };
 
   return (
-    <Spin spinning={loading}>
-      <StyledForm
-        name="normal_login"
-        className="login-form"
-        initialValues={{ remember: true }}
-        onFinish={OnFinish}
+    <StyledForm
+      name="normal_login"
+      className="login-form"
+      initialValues={{ remember: true }}
+      onFinish={OnFinish}
+    >
+      <h1 className="form-header">Đăng nhập</h1>
+
+      <Form.Item
+        name="username"
+        rules={[{ required: true, message: "Nhập tên tài khoản" }]}
       >
-        <h1 className="form-header">Sign in</h1>
+        <Input
+          prefix={<UserOutlined className="site-form-item-icon" />}
+          placeholder="Tên tài khoản"
+          className="input"
+        />
+      </Form.Item>
+      <Form.Item
+        name="password"
+        rules={[{ required: true, message: "Nhập mật khẩu" }]}
+        style={{ marginBottom: "50px" }}
+      >
+        <Input
+          prefix={<LockOutlined className="site-form-item-icon" />}
+          type="password"
+          placeholder="Mật khẩu"
+          className="input"
+        />
+      </Form.Item>
 
-        <Form.Item
-          name="username"
-          rules={[{ required: true, message: "Please input your Username!" }]}
+      <Form.Item className="middel">
+        <Button
+          type="primary"
+          htmlType="submit"
+          className="login-form-button"
+          loading={loading}
         >
-          <Input
-            prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="Username"
-            className="input"
-          />
-        </Form.Item>
-        <Form.Item
-          name="password"
-          rules={[{ required: true, message: "Please input your Password!" }]}
-        >
-          <Input
-            prefix={<LockOutlined className="site-form-item-icon" />}
-            type="password"
-            placeholder="Password"
-            className="input"
-          />
-        </Form.Item>
-        <div>
-          <Form.Item>
-            <Form.Item name="remember" valuePropName="checked" noStyle>
-              <Checkbox>Remember me</Checkbox>
-            </Form.Item>
-
-            <a href="" className="login-form-forgot">
-              Forgot password
-            </a>
-          </Form.Item>
+          Đăng nhập
+        </Button>
+        <div className="signup">
+          Bạn không có tài khoản?
+          <Link to="/signUp" className="color">
+            {" "}
+            Đăng ký
+          </Link>
         </div>
-
-        <Form.Item className="middel">
-          <Button
-            type="primary"
-            htmlType="submit"
-            className="login-form-button"
-          >
-            Sign in
-          </Button>
-          <div className="signup">
-            Doest't have an account ?
-            <Link to="/signUp" className="color">
-              {" "}
-              Sign Up!
-            </Link>
-          </div>
-        </Form.Item>
-      </StyledForm>
-    </Spin>
+      </Form.Item>
+    </StyledForm>
   );
 };
 

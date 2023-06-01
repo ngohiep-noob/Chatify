@@ -3,13 +3,15 @@ import {
   UserOutlined,
   MailOutlined,
   GithubFilled,
+  AlignLeftOutlined,
 } from "@ant-design/icons";
-import { Button, Form, Input, Spin } from "antd";
+import { Button, Form, Input, Spin, message } from "antd";
 import styled from "styled-components";
 import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import { RegisterAPI, UserCredentials } from "../../apis/auth.api";
+import useMessage from "antd/es/message/useMessage";
 
 const StyledForm = styled(Form)`
   background-color: while;
@@ -67,6 +69,7 @@ const StyledForm = styled(Form)`
 const Login = () => {
   const navigator = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const OnFinish = (values: any) => {
     setLoading(true);
@@ -81,11 +84,11 @@ const Login = () => {
 
         await RegisterAPI(creds);
 
-        console.log("Register successful");
-
         navigator("/home");
         setLoading(false);
       } catch (error) {
+        messageApi.error("Có lỗi xảy ra! Không thể đăng ký tài khoản!");
+        setLoading(false);
         console.error(error);
       }
     };
@@ -94,81 +97,81 @@ const Login = () => {
   };
 
   return (
-    <Spin spinning={loading}>
-      <StyledForm
-        name="normal_login"
-        className="login-form"
-        initialValues={{ remember: true }}
-        onFinish={OnFinish}
+    <StyledForm
+      name="normal_login"
+      className="login-form"
+      initialValues={{ remember: true }}
+      onFinish={OnFinish}
+    >
+      {contextHolder}
+      <h1 className="form-header">Đăng ký</h1>
+
+      <Form.Item
+        name="username"
+        rules={[{ required: true, message: "Hãy nhập tên tài khoản!" }]}
       >
-        <h1 className="form-header">Sign up</h1>
+        <Input
+          prefix={<UserOutlined className="site-form-item-icon" />}
+          placeholder="tên tài khoản"
+          className="input"
+        />
+      </Form.Item>
+      <Form.Item
+        name="password"
+        rules={[{ required: true, message: "Hãy nhập mật khẩu!" }]}
+      >
+        <Input
+          prefix={<LockOutlined className="site-form-item-icon" />}
+          type="password"
+          placeholder="mật khẩu"
+          className="input"
+        />
+      </Form.Item>
+      <Form.Item
+        name="email"
+        rules={[{ required: true, message: "Hãy nhập email của bạn!" }]}
+      >
+        <Input
+          prefix={<MailOutlined className="site-form-item-icon" />}
+          placeholder="Email"
+          className="input"
+        />
+      </Form.Item>
 
-        <Form.Item
-          name="username"
-          rules={[{ required: true, message: "Please input your Username!" }]}
-        >
-          <Input
-            prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="Username"
-            className="input"
-          />
-        </Form.Item>
-        <Form.Item
-          name="password"
-          rules={[{ required: true, message: "Please input your Password!" }]}
-        >
-          <Input
-            prefix={<LockOutlined className="site-form-item-icon" />}
-            type="password"
-            placeholder="Password"
-            className="input"
-          />
-        </Form.Item>
-        <Form.Item
-          name="email"
-          rules={[{ required: true, message: "Please input your Email!" }]}
-        >
-          <Input
-            prefix={<MailOutlined className="site-form-item-icon" />}
-            placeholder="Email"
-            className="input"
-          />
-        </Form.Item>
+      <Form.Item
+        name="fullname"
+        rules={[
+          {
+            required: true,
+            message: "Hãy nhập họ và tên!",
+          },
+        ]}
+      >
+        <Input
+          prefix={<AlignLeftOutlined className="site-form-item-icon" />}
+          placeholder="Họ và tên"
+          className="input"
+        />
+      </Form.Item>
 
-        <Form.Item
-          name="fullname"
-          rules={[
-            {
-              required: true,
-              message: "Please input your Password again!",
-            },
-          ]}
+      <Form.Item className="middel">
+        <Button
+          type="primary"
+          htmlType="submit"
+          className="login-form-button"
+          loading={loading}
         >
-          <Input
-            prefix={<GithubFilled className="site-form-item-icon" />}
-            placeholder="Fullname"
-            className="input"
-          />
-        </Form.Item>
-
-        <Form.Item className="middel">
-          <Button
-            type="primary"
-            htmlType="submit"
-            className="login-form-button"
-          >
-            Sign up
-          </Button>
-          <div className="signup">
-            If you had an account?
-            <Link to="/" className="color">
-              {" "}
-              Sign In!
-            </Link>
-          </div>
-        </Form.Item>
-      </StyledForm>
-    </Spin>
+          Đăng ký
+        </Button>
+        <div className="signup">
+          Bạn đã có tài khoản?
+          <Link to="/" className="color">
+            {" "}
+            Đăng nhập!
+          </Link>
+        </div>
+      </Form.Item>
+    </StyledForm>
   );
 };
 

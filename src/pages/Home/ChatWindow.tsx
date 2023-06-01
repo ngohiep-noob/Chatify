@@ -211,7 +211,7 @@ export default function ChatWindow() {
               ></Avatar>
             </Col>
 
-            <Col span={18}>
+            <Col span={16}>
               <Typography.Text
                 className="header_name"
                 strong
@@ -227,23 +227,18 @@ export default function ChatWindow() {
               </Typography.Text>
             </Col>
 
-            <Col span={2}>
-              <OrderedListOutlined
-                onClick={() => setOpenMemberListModal(true)}
-                style={{
-                  fontSize: "24px",
-                }}
-              />
+            <Col span={3}>
+              <Button onClick={() => setOpenMemberListModal(true)}>
+                Thành viên
+              </Button>
             </Col>
-
-            <Col span={2}>
-              <UserAddOutlined
-                onClick={() => setOpenAddModal(true)}
-                style={{
-                  fontSize: "24px",
-                }}
-              />
-            </Col>
+            {chatInfo?.ownerId === value?.user?.id && (
+              <Col span={3}>
+                <Button onClick={() => setOpenAddModal(true)}>
+                  Thêm mới
+                </Button>
+              </Col>
+            )}
           </Row>
 
           <div
@@ -298,7 +293,7 @@ export default function ChatWindow() {
                 type="primary"
                 onClick={handleSendMessage}
               >
-                Send
+                Gửi
                 <SendOutlined />
               </Button>
             </Col>
