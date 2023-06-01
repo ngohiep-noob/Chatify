@@ -12,7 +12,9 @@ const StyledForm = styled(Form)`
   padding: 20px;
   border-radius: 20px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-
+  .error{
+    color: red;
+  }
   .form-header {
     font-size: 40px;
     text-align: center;
@@ -62,7 +64,7 @@ const Login = () => {
   const navigator = useNavigate();
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState("");
-
+  const [error, setError] = useState('');
   const OnFinish = (values: any) => {
     console.log(values);
 
@@ -87,11 +89,14 @@ const Login = () => {
         console.log("Login successful");
         setTimeout(() => {
           navigator("/home");
-          setLoading(false);
-        }, 500);
+          setLoading(true);
+        }, 1);
         // thành công
       } catch (error) {
-        console.error(error);
+      
+       
+            setError('Wrong password or username. Please try again later.');
+      
       }
     };
     fetchData();
@@ -106,6 +111,7 @@ const Login = () => {
         onFinish={OnFinish}
       >
         <h1 className="form-header">Sign in</h1>
+        {error && <p className="error">{error}</p>}
         <Form.Item
           name="username"
           rules={[{ required: true, message: "Please input your Username!" }]}
