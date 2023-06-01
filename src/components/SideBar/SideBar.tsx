@@ -8,6 +8,7 @@ import {
   Typography,
   Modal,
   Input,
+  Form,
 } from "antd";
 import Logo from "./Logo";
 import ListItem from "./ListItem";
@@ -49,21 +50,14 @@ const StyledRow = styled(Row)`
 `;
 
 export default function SideBar() {
-  const [inputValue1, setInputValue1] = useState("");
-  const [inputValue2, setInputValue2] = useState("");
-  const handleInputChange1 = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue1(e.target.value);
-  };
-  const handleInputChange2 = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue2(e.target.value);
-  };
+  const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
     setIsModalOpen(true);
   };
   const handleOk = () => {
-    console.log("Input value:", inputValue1);
-    console.log("Input value:", inputValue2);
+    console.log(form.getFieldsValue());
+    form.resetFields();
     setIsModalOpen(false);
   };
 
@@ -116,23 +110,19 @@ export default function SideBar() {
       theme="light"
     >
       <Modal
-        title="Create room"
+        title="Tạo phòng"
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
       >
-        <Input
-          value={inputValue1}
-          onChange={handleInputChange1}
-          placeholder="Room's name"
-          style={{ marginTop: "15px" }}
-        />
-        <Input
-          value={inputValue2}
-          onChange={handleInputChange2}
-          placeholder="Fullname"
-          style={{ marginTop: "15px" }}
-        />
+        <Form form={form} layout="vertical">
+          <Form.Item label="Tên phòng" name="name">
+            <Input placeholder="Nhập tên phòng" />
+          </Form.Item>
+          <Form.Item label="Mô tả" name="description">
+            <Input.TextArea placeholder="Nhập mô tả" />
+          </Form.Item>
+        </Form>
       </Modal>
 
       <Logo />
