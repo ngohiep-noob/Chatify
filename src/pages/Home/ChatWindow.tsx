@@ -7,6 +7,7 @@ import {
   Row,
   Tooltip,
   Typography,
+  Form
 } from "antd";
 import {
   AntDesignOutlined,
@@ -14,13 +15,16 @@ import {
   UserOutlined,
   UserAddOutlined
 } from "@ant-design/icons";
-
+import { JoinRoomMadall } from "../../components/SideBar/JoimRoomModal";
 import { useContext, useEffect,useState } from "react";
 import { AppContext } from "../../context/app.context";
 import React from "react";
 import Message from "../../components/MainChat/Message";
 import { GetChatHistory } from "../../apis/chat.api";
-
+import {
+  JoinRoomRequest,
+  JoinRoomAdd
+} from "../../apis/room.api";
 interface MessageProps {
   senderId: string;
   senderName: string;
@@ -32,10 +36,39 @@ interface ChatInfo {
   desc: string;
   memberCount: number;
 }
-
+import axios from "axios";
 export default function ChatWindow() {
+  const { value, action } = useContext(AppContext);
+  const [form] = Form.useForm();
   const [isHovered, setIsHovered] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const handleOk = async () => {
+    setLoading(true);
+    try {
+      const createJoinRequest: JoinRoomRequest = {
+        roomId:value?.selectedItemId,
+        usernames: form.getFieldValue("members"),
+      };
 
+      console.log("create room request: ", createJoinRequest);
+
+      await JoinRoomAdd(createJoinRequest);
+      action?.showMessage?.("success", "Add members successfully!");
+      setIsModalOpen(false);
+      setLoading(false);
+    } catch (error) {
+      action?.showMessage?.("error", "Cannot Add members ");
+      setLoading(false);
+    }
+
+    setIsModalOpen(false);
+
+  };
+  const handleCancel = () => {
+    axios.CancelToken.source().cancel();
+    setIsModalOpen(false);
+  };
   const handleMouseEnter = () => {
     setIsHovered(true);
   };
@@ -43,7 +76,7 @@ export default function ChatWindow() {
   const handleMouseLeave = () => {
     setIsHovered(false);
   };
-  const { value, action } = useContext(AppContext);
+ 
   const [chatList, setChatList] = React.useState<MessageProps[]>([]);
   const [chatInfo, setChatInfo] = React.useState<ChatInfo>();
 
@@ -130,7 +163,7 @@ export default function ChatWindow() {
             <UserAddOutlined 
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave} 
-            onClick={action?.HandleAddFriend}
+            onClick={() => setIsModalOpen(true)}
             style={{  marginLeft: '100px',color: isHovered ? 'blue' : 'black', fontSize: '24px', transition: 'color 0.3s' }}/>
             </Col>
           </Row>
@@ -182,6 +215,13 @@ export default function ChatWindow() {
           </Row>
         </>
       )}
+      <JoinRoomMadall
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        form={form}
+      />
     </div>
+    
   );
 }

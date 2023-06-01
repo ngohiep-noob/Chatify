@@ -14,6 +14,12 @@ export type CreateRoomRequest = {
   memberNames: string[];
 };
 
+export type JoinRoomRequest={
+  roomId: string| undefined;
+  usernames: string[]
+}
+
+
 export const getRoomList = async (): Promise<GetRoomResponse> => {
   const token = getToken();
 
@@ -40,3 +46,15 @@ export const CreateRoom = async (req: CreateRoomRequest) => {
 
   return response.data;
 };
+
+export const JoinRoomAdd=async (req: JoinRoomRequest) => {
+  const token = getToken();
+
+  const response = await axios.post("http://localhost:8888/room/add-users", req, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+}
