@@ -10,9 +10,9 @@ import {
 import styled from "styled-components";
 import React, { useEffect } from "react";
 import { AppContext } from "../../context/app.context";
-import { getRoomList } from "../../apis/user.api";
-import { MenuItem } from "../../types/Home";
-import { GetChatHistory } from "../../apis/chat.api";
+import { getRoomList, getUserInfor } from "../../apis/user.api";
+import { MenuItem} from "../../types/Home";
+import {ContextValue} from "../../context/app.context"
 
 const { Sider } = Layout;
 const { Text } = Typography;
@@ -55,16 +55,25 @@ export default function SideBar() {
         }));
 
         if (action?.setRoomList) action.setRoomList(menuItemList);
+
+
+        // fetch profile ở đây
+        const profile = await getUserInfor();
+        console.log(profile);
+         const userr:  ContextValue["user"]=
+         {
+          id:profile.data.id,
+          name:profile.data.fullName,
+          email: profile.data.email,
+
+         }
+        if (action?.setUserInfo) action.setUserInfo(userr);
+
       })();
     } catch (error) {
       console.log("Side bar error: ", error);
     }
   }, []);
-
-  const handleSelectedItem = (item: any) => {
-    const { key } = item;
-    if (action?.setSelectedItem) action?.setSelectedItem(key as string);
-  };
 
   return (
     <Sider
@@ -145,7 +154,10 @@ export default function SideBar() {
               : [],
           },
         ]}
-        onSelect={handleSelectedItem}
+        onSelect={(item) => {
+          const { key } = item;
+          if (action?.setSelectedItem) action?.setSelectedItem(key as string);
+        }}
       />
     </Sider>
   );
