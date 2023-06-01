@@ -6,7 +6,7 @@ type GetRoomResponse = {
   message: string;
   status: string;
 };
-
+  
 export const getRoomList = async (): Promise<GetRoomResponse> => {
   const token = getToken();
 
