@@ -1,31 +1,17 @@
+import { Avatar, Button, Col, Empty, Input, Row, Typography, Form } from "antd";
 import {
-  Avatar,
-  Button,
-  Col,
-  Empty,
-  Input,
-  Row,
-  Typography,
-  Form,
-  Space,
-} from "antd";
-import {
-  OrderedListOutlined,
   SendOutlined,
-  UserAddOutlined,
+  TeamOutlined,
 } from "@ant-design/icons";
 import { JoinRoomModal as JoinRoomModal } from "../../components/SideBar/JoinRoomModal";
-import { createRef, useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { AppContext } from "../../context/app.context";
 import Message from "../../components/MainChat/Message";
-import { GetChatHistory } from "../../apis/chat.api";
-import { JoinRoomRequest, JoinRoom, GetMemberList } from "../../apis/room.api";
+
+import { JoinRoomRequest, JoinRoom } from "../../apis/room.api";
 import axios from "axios";
-import SockJS from "sockjs-client";
-import { over } from "stompjs";
-import { SERVER_URL } from "../../apis/constant";
-import { User } from "../../types/User";
-import { MemberListModal } from "../../components/MainChat/MemberListModal";
+import { Client } from "stompjs";
+
 interface MessageProps {
   senderId: string;
   senderName: string;
@@ -39,55 +25,42 @@ interface ChatInfo {
   ownerId?: string;
 }
 
-interface MessagePayload {
-  senderId: string;
-  senderName?: string;
-  receiverId: string;
+interface ChatWindowProps {
+  roomId: any;
+  stompClient: Client;
+  setMessage: (message: string) => void;
+  handleSendMessage: () => void;
+  chatInfo: ChatInfo | undefined;
+  chatList: MessageProps[] | undefined;
   message: string;
+  fetchSiderBarData: () => void;
 }
 
-const sock = new SockJS(`${SERVER_URL}/ws`);
-const stompClient = over(sock);
-
-export default function ChatWindow() {
+export default function ChatWindow({
+  roomId,
+  chatInfo,
+  setMessage,
+  handleSendMessage,
+  chatList,
+  message,
+  fetchSiderBarData,
+}: ChatWindowProps) {
   const [joinRoomForm] = Form.useForm();
   const [openAddModal, setOpenAddModal] = useState(false);
-  const [openMemberListModal, setOpenMemberListModal] = useState(false);
-
-  const [chatList, setChatList] = useState<MessageProps[]>([]);
-  const [chatInfo, setChatInfo] = useState<ChatInfo>();
-  const [message, setMessage] = useState<string>("");
-  const [chatRoomId, setChatRoomId] = useState<string>("");
-  const [members, setMembers] = useState<User[]>([]);
   const { value, action } = useContext(AppContext);
-  const chatDivRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    stompClient.connect(
-      {},
-      () => {
-        console.log("websocket connected!");
-      },
-      (error: any) => console.log("connect websocket error: ", error)
-    );
-  }, []);
+  const chatWindowRef = useRef<any>(null);
 
   const handleAddMember = async () => {
     try {
       const createJoinRequest: JoinRoomRequest = {
-        roomId: value?.selectedItemId,
+        roomId: roomId,
         usernames: joinRoomForm.getFieldValue("members"),
       };
 
-      console.log("create room request: ", createJoinRequest);
-
       await JoinRoom(createJoinRequest);
-      action?.showMessage?.("success", "Add members successfully!");
-
-      const memberListRes = await GetMemberList(value?.selectedItemId || "");
-      setMembers(memberListRes.data);
 
       setOpenAddModal(false);
+      fetchSiderBarData();
     } catch (error) {
       action?.showMessage?.("error", "Cannot Add members ");
     }
@@ -100,81 +73,10 @@ export default function ChatWindow() {
   };
 
   useEffect(() => {
-    try {
-      if (!value?.selectedItemId) return;
-
-      (async () => {
-        const chatHistory = await GetChatHistory(value?.selectedItemId || "");
-        const memberListRes = await GetMemberList(value?.selectedItemId || "");
-
-        const { data } = chatHistory;
-
-        console.log("Chat history: ", data);
-
-        const msgs: MessageProps[] = data.chats.map((item) => ({
-          senderId: item.user.id || "",
-          senderName: item.user.username || "",
-          message: item.message,
-        }));
-
-        stompClient.unsubscribe(`/chatroom/${chatRoomId}`);
-        setChatRoomId(data.id);
-
-        setChatList(msgs);
-
-        setMembers(memberListRes.data);
-
-        setChatInfo({
-          name: data.name,
-          desc: data.desc,
-          memberCount: data.memberCount,
-          ownerId: data.ownerId,
-        });
-      })();
-    } catch (error) {
-      console.log("Get chat history error: ", error);
+    if (chatWindowRef.current) {
+      chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
     }
-  }, [value?.selectedItemId]);
-
-  useEffect(() => {
-    if (!chatRoomId) return;
-    stompClient.subscribe(`/chatroom/${chatRoomId}`, onReceiveMessage);
-    console.log("subscribe to chatroom: ", `/chatroom/${chatRoomId}`);
-  }, [chatRoomId]);
-
-  const handleSendMessage = () => {
-    if (!message) return;
-    try {
-      const sendMessageRequest: MessagePayload = {
-        senderId: value?.user?.id || "",
-        receiverId: value?.selectedItemId || "",
-        message: message,
-      };
-
-      setMessage("");
-
-      stompClient.send(
-        "/app/group-chat",
-        {},
-        JSON.stringify(sendMessageRequest)
-      );
-    } catch (error) {
-      console.log("Send message error: ", error);
-    }
-  };
-
-  const onReceiveMessage = (payload: any) => {
-    const msg: MessagePayload = JSON.parse(payload.body);
-
-    setChatList((prev) => [
-      ...prev,
-      {
-        senderId: msg.senderId,
-        senderName: msg.senderName || "username",
-        message: msg.message,
-      },
-    ]);
-  };
+  }, [chatList]);
 
   return (
     <div
@@ -182,7 +84,7 @@ export default function ChatWindow() {
         width: "100%",
       }}
     >
-      {!value?.selectedItemId && (
+      {!roomId && (
         <Empty
           description={false}
           style={{
@@ -193,9 +95,12 @@ export default function ChatWindow() {
           }}
         />
       )}
-      {value?.selectedItemId && (
+      {roomId && (
         <>
-          <Row style={{ height: "10vh" }} align="middle">
+          <Row
+            style={{ height: "10vh", borderBottom: "1px solid #dddddd" }}
+            align="middle"
+          >
             <Col
               span={2}
               style={{
@@ -204,13 +109,7 @@ export default function ChatWindow() {
                 alignItems: "center",
               }}
             >
-              <Avatar
-                className="header_avatar"
-                size={50}
-                style={{ backgroundImage: 
-                  "url('https://img.freepik.com/free-photo/green-sofa-white-living-room-with-free-space_43614-834.jpg?w=2000')",
-                   backgroundSize: 'cover' }}
-              ></Avatar>
+              <Avatar size={40} icon={<TeamOutlined />}></Avatar>
             </Col>
 
             <Col span={16}>
@@ -223,54 +122,55 @@ export default function ChatWindow() {
               </Typography.Text>{" "}
               <br />
               <Typography.Text style={{ fontSize: "15px" }}>
-                {`${chatInfo?.desc || ""} - ${
-                  chatInfo?.memberCount || 0
-                } Members`}
+                {`${chatInfo?.desc || ""}`}
               </Typography.Text>
             </Col>
 
-            <Col span={3}>
-              <Button onClick={() => setOpenMemberListModal(true)}>
-                Thành viên
-              </Button>
-            </Col>
             {chatInfo?.ownerId === value?.user?.id && (
-              <Col span={3}>
-                <Button onClick={() => setOpenAddModal(true)}>
-                  Thêm mới
+              <Col>
+                <Button
+                  onClick={() => {
+                    setOpenAddModal(true);
+                  }}
+                >
+                  Thêm thành viên mới
                 </Button>
               </Col>
             )}
           </Row>
 
-          <div
-            ref={chatDivRef}
-            style={{
-              overflow: "auto",
-              height: "80vh",
-              padding: "10px",
-              backgroundColor: "#FFF",
-            }}
-          >
-            {chatList.map((item, index) => {
-              return (
-                <Message
-                  text={item.message}
-                  photoUrl={
-                    "https://i.pinimg.com/originals/e1/ed/eb/e1edeb6d3f086b74b0f33be6e665c10f.jpg"
-                  }
-                  displayName={item.senderName}
-                  isOwner={String(item.senderId) === String(value.user?.id)}
-                  key={index}
-                ></Message>
-              );
-            })}
-          </div>
-
+          {chatList && (
+            <div
+              style={{
+                overflow: "auto",
+                height: "80vh",
+                padding: "10px",
+                width: "100%",
+                backgroundColor: "#FFF",
+                scrollBehavior: "smooth",
+              }}
+              ref={chatWindowRef}
+            >
+              {chatList.map((item, index) => {
+                return (
+                  <Message
+                    text={item.message}
+                    displayName={item.senderName}
+                    isOwner={String(item.senderId) === String(value?.user?.id)}
+                    key={index}
+                  ></Message>
+                );
+              })}
+            </div>
+          )}
           <Row
             justify="space-between"
             align="middle"
-            style={{ padding: "10px", height: "10vh" }}
+            style={{
+              padding: "10px",
+              height: "10vh",
+              borderTop: "1px solid #ddd",
+            }}
           >
             <Col span={21}>
               <Input
@@ -279,6 +179,7 @@ export default function ChatWindow() {
                   setMessage(event.target.value);
                 }}
                 onPressEnter={handleSendMessage}
+                style={{ borderRadius: "20px" }}
                 value={message}
               />
             </Col>
@@ -294,6 +195,9 @@ export default function ChatWindow() {
                 className="button"
                 type="primary"
                 onClick={handleSendMessage}
+                style={{
+                  borderRadius: "20px",
+                }}
               >
                 Gửi
                 <SendOutlined />
@@ -302,13 +206,6 @@ export default function ChatWindow() {
           </Row>
         </>
       )}
-
-      <MemberListModal
-        open={openMemberListModal}
-        members={members}
-        ownerId={chatInfo?.ownerId}
-        onClose={() => setOpenMemberListModal(false)}
-      />
 
       <JoinRoomModal
         open={openAddModal}

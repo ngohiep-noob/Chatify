@@ -1,14 +1,13 @@
 import { useRoutes } from "react-router-dom";
 import Login from "./pages/Auth/Login";
-import Home from "./pages/Home";
+import ChatBox from "./pages/ChatBox";
 import NotFound from "./pages/NotFound";
 import SignUp from "./pages/Auth/SignUp";
 import AppProvider from "./context/app.context";
 import AuthLayout from "./pages/Auth/Layout";
+import RoomList from "./pages/Home/RoomList";
 
 function App() {
-  
-
   const routes = useRoutes([
     {
       path: "/",
@@ -27,8 +26,12 @@ function App() {
       ),
     },
     {
-      path: "/home",
-      element: <Home />,
+      path: "/chat-box/:id",
+      element: <ChatBox />,
+    },
+    {
+      path: "/room-list",
+      element: <RoomList />,
     },
     {
       path: "*",
@@ -38,9 +41,7 @@ function App() {
 
   return (
     <>
-      <AppProvider>
-        {routes}
-      </AppProvider>
+      <AppProvider>{routes}</AppProvider>
     </>
   );
 }

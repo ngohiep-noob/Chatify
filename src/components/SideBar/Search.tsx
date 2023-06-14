@@ -1,6 +1,6 @@
-import { Row, Input, Button } from "antd";
+import { Input, Button } from "antd";
 import { SearchOutlined, CommentOutlined } from "@ant-design/icons";
-import React from "react";
+
 import styled from "styled-components";
 const Inputstyle = styled.div`
   .input {

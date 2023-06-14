@@ -6,7 +6,7 @@ export type User = {
   email?: string;
   fullName?: string;
   role?: string;
-  active?: boolean;
+  isOnline?: boolean;
 };
 
 export type RoomItem = {

@@ -1,6 +1,5 @@
 import { Form, FormInstance, Input, Modal, Select, SelectProps } from "antd";
 import { useEffect, useState } from "react";
-import { User } from "../../types/User";
 import { GetAllUsers } from "../../apis/user.api";
 
 export interface CreateRoomModalProps {

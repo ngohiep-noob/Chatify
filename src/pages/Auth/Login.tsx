@@ -1,9 +1,9 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Checkbox, Form, Input, Spin } from "antd";
+import { Button, Form, Input } from "antd";
 import styled from "styled-components";
 import { useNavigate, Link } from "react-router-dom";
 import { useContext, useState } from "react";
-import axios from "axios";
+
 import { LoginAPI, UserCredentials } from "../../apis/auth.api";
 import { AppContext } from "../../context/app.context";
 
@@ -77,7 +77,7 @@ const Login = () => {
         if (action?.showMessage)
           action.showMessage("success", "Đăng nhập thành công!");
 
-        navigator("/home");
+        navigator("/room-list");
         setLoading(false);
       } catch (error) {
         setLoading(false);

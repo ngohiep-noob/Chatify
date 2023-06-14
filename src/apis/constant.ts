@@ -1,1 +1,1 @@
-export const SERVER_URL = "http://localhost:8888";
+export const SERVER_URL = import.meta.env.VITE_BE_URL as string;

@@ -2,16 +2,13 @@ import {
   LockOutlined,
   UserOutlined,
   MailOutlined,
-  GithubFilled,
   AlignLeftOutlined,
 } from "@ant-design/icons";
-import { Button, Form, Input, Spin, message } from "antd";
+import { Button, Form, Input, message } from "antd";
 import styled from "styled-components";
 import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
-import axios from "axios";
 import { RegisterAPI, UserCredentials } from "../../apis/auth.api";
-import useMessage from "antd/es/message/useMessage";
 
 const StyledForm = styled(Form)`
   background-color: while;

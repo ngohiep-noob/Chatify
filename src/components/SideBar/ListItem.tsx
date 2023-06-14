@@ -1,74 +1,56 @@
-import { Avatar, Typography } from "antd";
-import styled from "styled-components";
+import { Avatar, Space, Typography } from "antd";
 import { MenuItem } from "../../types/Home";
 import dayjs from "dayjs";
-
-const DivStyled = styled.div`
-  .name {
-    position: absolute;
-    top: 0px;
-    left: 50px;
-    font-family: Epilogue;
-    font-size: 15px;
-    color: #171a1fff; /* neutral-900 */
-  }
-  .last-msg {
-    position: absolute;
-    top: 20px;
-    left: 50px;
-    font-size: 12px;
-    color: #171a1fff; /* neutral-900 */
-  }
-
-  .Avata {
-    position: absolute;
-    top: 3px;
-    left: 5px;
-    font-size: 17px;
-  }
-
-  .Time {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 12px;
-  }
-`;
+import { useState } from "react";
+import { TeamOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 
 export default function ListItem({
   name,
   lastChattingUsername,
   lastMessageTime,
   lastMessage,
+  id,
 }: MenuItem) {
-  const nameSlipt = name.split(" ");
+  const [isHover, setIsHover] = useState(false);
 
   return (
-    <DivStyled>
-      <div>
-        <Avatar style={{ backgroundImage: 
-                  "url('https://img.freepik.com/free-photo/green-sofa-white-living-room-with-free-space_43614-834.jpg?w=2000')",
-                   backgroundSize: 'cover' }} className="Avata">
-         { /* {nameSlipt[nameSlipt.length - 1][0].toUpperCase()}*/ }
-        </Avatar>
-      </div>
-      <div>
-        <Typography.Text className="name" strong>
-          {name}
-        </Typography.Text>
-        <Typography.Text className="last-msg">
-          {lastMessage ? (
-            <>
-              <b>{lastChattingUsername}:</b> <span>{lastMessage}</span>
-            </>
-          ) : (
-            <i>phòng vừa được tạo</i>
-          )}
-        </Typography.Text>
-        <Typography.Text className="Time" type="secondary">
-          {lastMessageTime ? dayjs(lastMessageTime).format("HH:mm A") : ""}
-        </Typography.Text>
-      </div>
-    </DivStyled>
+    <Link to={`/chat-box/${id}`} target='_blank'>
+      <Space
+        direction="horizontal"
+        style={{
+          backgroundColor: isHover ? "#d1e7ed" : "",
+          padding: "10px",
+          borderRadius: "10px",
+          transition: "all 0.5s",
+          width: "100%",
+          cursor: "pointer",
+        }}
+        onMouseOver={() => setIsHover(true)}
+        onMouseOut={() => setIsHover(false)}
+      >
+        <Avatar icon={<TeamOutlined />} size={40}></Avatar>
+
+        <div style={{ marginRight: "40px" }}>
+          <Typography.Text strong>{name}</Typography.Text> <br />
+          <Typography.Text>
+            {lastMessage ? (
+              <>
+                <b>{lastChattingUsername}:</b> <span>{lastMessage}</span>{" "}
+                <Typography.Text type="secondary">
+                  (
+                  {lastMessageTime
+                    ? dayjs(lastMessageTime).format("HH:mm A")
+                    : ""}
+                  )
+                </Typography.Text>
+              </>
+            ) : (
+              <i>phòng vừa được tạo</i>
+            )}
+          </Typography.Text>
+        </div>
+      </Space>
+    </Link>
   );
 }
