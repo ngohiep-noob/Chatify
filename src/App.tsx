@@ -1,24 +1,37 @@
-import styled from "styled-components";
 import { useRoutes } from "react-router-dom";
-import Login from "./pages/Login";
-import Home from "./pages/Home";
+import Login from "./pages/Auth/Login";
+import ChatBox from "./pages/ChatBox";
 import NotFound from "./pages/NotFound";
+import SignUp from "./pages/Auth/SignUp";
+import AppProvider from "./context/app.context";
+import AuthLayout from "./pages/Auth/Layout";
+import RoomList from "./pages/Home/RoomList";
 
 function App() {
-  const Title = styled.h1`
-    font-size: 1.5em;
-    text-align: center;
-    color: palevioletred;
-  `;
-
   const routes = useRoutes([
     {
       path: "/",
-      element: <Login />,
+      element: (
+        <AuthLayout>
+          <Login />
+        </AuthLayout>
+      ),
     },
     {
-      path: "/home",
-      element: <Home />,
+      path: "/signUp",
+      element: (
+        <AuthLayout>
+          <SignUp />
+        </AuthLayout>
+      ),
+    },
+    {
+      path: "/chat-box/:id",
+      element: <ChatBox />,
+    },
+    {
+      path: "/room-list",
+      element: <RoomList />,
     },
     {
       path: "*",
@@ -26,7 +39,11 @@ function App() {
     },
   ]);
 
-  return <>{routes}</>;
+  return (
+    <>
+      <AppProvider>{routes}</AppProvider>
+    </>
+  );
 }
 
 export default App;
